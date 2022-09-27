@@ -6,25 +6,32 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as syspaths;
 
 class ImageInput extends StatefulWidget {
+  final Function onSelectImage;
+
+  ImageInput(this.onSelectImage);
+
   @override
   _ImageInputState createState() => _ImageInputState();
 }
 
 class _ImageInputState extends State<ImageInput> {
-  File? _storedImage;
+  XFile? _storedImage;
 
   Future<void> _takePicture() async {
-    final imageFile = await ImagePicker.platform.pickImage(
+    final imageFile = await ImagePicker().pickImage(
       source: ImageSource.camera,
       maxWidth: 600,
     );
     setState(() {
-      _storedImage = imageFile as File;
+      _storedImage = imageFile;
     });
     final appDir = await syspaths.getApplicationDocumentsDirectory();
     final fileName = path.basename(imageFile!.path);
     final savedImage =
         await File(imageFile.path).copy('${appDir.path}/$fileName');
+    print('${appDir.path}/$fileName');
+    print(savedImage.path);
+    widget.onSelectImage(savedImage);
   }
 
   @override
@@ -37,29 +44,29 @@ class _ImageInputState extends State<ImageInput> {
           decoration: BoxDecoration(
             border: Border.all(width: 1, color: Colors.grey),
           ),
+          alignment: Alignment.center,
           child: _storedImage != null
               ? Image.file(
-                  _storedImage!,
+                  File(_storedImage!.path),
                   fit: BoxFit.cover,
                   width: double.infinity,
                 )
-              : Text(
+              : const Text(
                   'No Image Taken',
                   textAlign: TextAlign.center,
                 ),
-          alignment: Alignment.center,
         ),
-        SizedBox(
+        const SizedBox(
           width: 10,
         ),
         Expanded(
           child: ElevatedButton.icon(
-            icon: Icon(Icons.camera),
-            label: Text('Take Picture'),
+            icon: const Icon(Icons.camera),
+            label: const Text('Take Picture'),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
               backgroundColor: Theme.of(context).primaryColor,
-              textStyle: TextStyle(fontSize: 15),
+              textStyle: const TextStyle(fontSize: 15),
               elevation: 0,
             ),
             onPressed: _takePicture,

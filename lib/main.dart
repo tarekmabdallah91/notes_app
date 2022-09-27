@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:notes_app/pages/add_note_page.dart';
-import 'package:notes_app/provider/NoteProvider.dart';
+import 'package:notes_app/provider/note_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'pages/home_page.dart';
 import 'pages/note_details_page.dart';
+import 'pages/notes_page.dart';
 
 void main() {
   runApp(const NotesApp());
@@ -26,7 +26,7 @@ class NotesApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: HomePage(),
+        home: NotesPage(),
         routes: {
           NoteDetailsPage.route: (context) => NoteDetailsPage(),
           AddNotePage.route: (context) => AddNotePage(),

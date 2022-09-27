@@ -1,17 +1,47 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:notes_app/models/note_model.dart';
+import 'package:notes_app/provider/note_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/image_input.dart';
 
-class AddNotePage extends StatelessWidget {
+class AddNotePage extends StatefulWidget {
   static const route = '/AddNotePage';
 
   @override
-  Widget build(BuildContext context) {
-    final _titleController = TextEditingController();
+  State<AddNotePage> createState() => _AddNotePageState();
+}
 
+class _AddNotePageState extends State<AddNotePage> {
+  final _titleController = TextEditingController();
+  final _bodyController = TextEditingController();
+  File? _pickedImage;
+
+  void _selectImage(File pickedImage) {
+    _pickedImage = pickedImage;
+  }
+
+  void saveNote() {
+    if (_titleController.text.isEmpty ||
+        _bodyController.text.isEmpty ||
+        _pickedImage == null) return;
+
+    NoteModel noteModel = NoteModel(
+      title: _titleController.text,
+      body: _bodyController.text,
+      imageUrl: _pickedImage!.path,
+    );
+    Provider.of<NoteProvider>(context, listen: false).addNote(noteModel);
+    Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add a New Note'),
+        title: const Text('Add a New Note'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -19,28 +49,35 @@ class AddNotePage extends StatelessWidget {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   children: <Widget>[
                     TextField(
-                      decoration: InputDecoration(labelText: 'Title'),
+                      decoration: const InputDecoration(labelText: 'Title'),
                       controller: _titleController,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
-                    ImageInput(),
+                    TextField(
+                      decoration: const InputDecoration(labelText: 'body'),
+                      controller: _bodyController,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ImageInput(_selectImage),
                   ],
                 ),
               ),
             ),
           ),
           ElevatedButton.icon(
-            icon: Icon(Icons.add),
-            label: Text('Add Place'),
-            onPressed: () {},
+            icon: const Icon(Icons.add),
+            label: const Text('Add Note'),
+            onPressed: saveNote,
             style: ElevatedButton.styleFrom(
-              textStyle: TextStyle(fontSize: 15),
+              textStyle: const TextStyle(fontSize: 15),
               elevation: 0,
             ),
           ),
