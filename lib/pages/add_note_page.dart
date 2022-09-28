@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:notes_app/cubit/note_cubit.dart';
 import 'package:notes_app/models/note_model.dart';
 import 'package:notes_app/provider/note_provider.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +69,7 @@ class _AddNotePageState extends State<AddNotePage> {
       imageUrl: _pickedImage!.path,
     );
     print('${noteModel.id}');
-    Provider.of<NoteProvider>(context, listen: false).addNote(noteModel);
+    BlocProvider.of<NoteCubit>(context).addNote(noteModel);
     Navigator.of(context).pop();
   }
 

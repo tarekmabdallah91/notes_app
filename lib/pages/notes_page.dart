@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes_app/cubit/note_cubit.dart';
+import 'package:notes_app/cubit/note_states.dart';
 import 'package:notes_app/pages/add_note_page.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +14,8 @@ class NotesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("build notes page ${DateTime.now()}");
+    NoteCubit noteCubit = BlocProvider.of<NoteCubit>(context);
+    noteCubit.getAllNotes();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes'),
@@ -21,26 +26,25 @@ class NotesPage extends StatelessWidget {
           )
         ],
       ),
-      body: FutureBuilder(
-        future: Provider.of<NoteProvider>(context, listen: false).getAllNotes(),
-        builder: (context, snapshot) => Consumer<NoteProvider>(
-          child: const Center(
-            child: Text('No Notes Added!, You can add now'),
-          ),
-          builder: (context, notesProvider, consumerChild) =>
-              snapshot.connectionState == ConnectionState.waiting
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : notesProvider.notes.isEmpty
-                      ? consumerChild!
-                      : ListView.builder(
-                          itemBuilder: (context, index) => NoteListItem(
-                                note: notesProvider.notes[index],
-                              ),
-                          itemCount: notesProvider.notes.length),
-        ),
-      ),
+      body: BlocBuilder<NoteCubit, NoteState>(builder: (context, state) {
+        if (state is InitNoteState) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is GetAllNotesState || state is AddNoteState) {
+          return noteCubit.notes.isEmpty
+              ? Center(child: Text('please add notes !'))
+              : ListView.builder(
+                  itemBuilder: (context, index) => NoteListItem(
+                        note: noteCubit.notes[index],
+                      ),
+                  itemCount: noteCubit.notes.length);
+        } else {
+          return const Center(
+            child: Text('Error no data available !'),
+          );
+        }
+      }),
     );
   }
 }

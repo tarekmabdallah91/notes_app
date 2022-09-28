@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes_app/cubit/note_cubit.dart';
 import 'package:notes_app/pages/add_note_page.dart';
 import 'package:notes_app/provider/note_provider.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +23,8 @@ class NotesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => NoteProvider(),
+    return BlocProvider(
+      create:(context) => NoteCubit(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: appTitle,
