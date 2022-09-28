@@ -3,6 +3,9 @@ import 'package:notes_app/models/note_model.dart';
 
 class NoteDetailsPage extends StatelessWidget {
   static const route = '/NoteDetailsPage';
+  static void openNoteDetailsPage(BuildContext context, NoteModel note) {
+    Navigator.of(context).pushNamed(NoteDetailsPage.route, arguments: note);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +15,13 @@ class NoteDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(note.title),
       ),
-      body: Text(note.body),
+      body: Column(children: [
+        Text(note.body),
+        Text(
+          note.noteTime,
+        ),
+        //  note.imageUrl.isEmpty ? Spacer() : Image.network(note.imageUrl),
+      ]),
     );
   }
 }

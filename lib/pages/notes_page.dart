@@ -6,35 +6,40 @@ import '../provider/note_provider.dart';
 import '../widgets/notes_list_item.dart';
 
 class NotesPage extends StatelessWidget {
-  void openAddNotePage(BuildContext context) {
-    Navigator.of(context).pushNamed(AddNotePage.route);
-  }
+  static const route = '/NotesPage';
 
   @override
   Widget build(BuildContext context) {
-    // final notes = Provider.of<NoteProvider>(context).getNotes();
-    print("build notes page");
+    print("build notes page ${DateTime.now()}");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes'),
         actions: [
           IconButton(
-            onPressed: () => openAddNotePage(context),
+            onPressed: () => AddNotePage.openAddNotePage(context),
             icon: const Icon(Icons.add),
           )
         ],
       ),
-      body: Consumer<NoteProvider>(
-        child: const Center(
-          child: Text('No Notes Added!, You can add now'),
+      body: FutureBuilder(
+        future: Provider.of<NoteProvider>(context, listen: false).getAllNotes(),
+        builder: (context, snapshot) => Consumer<NoteProvider>(
+          child: const Center(
+            child: Text('No Notes Added!, You can add now'),
+          ),
+          builder: (context, notesProvider, consumerChild) =>
+              snapshot.connectionState == ConnectionState.waiting
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : notesProvider.notes.isEmpty
+                      ? consumerChild!
+                      : ListView.builder(
+                          itemBuilder: (context, index) => NoteListItem(
+                                note: notesProvider.notes[index],
+                              ),
+                          itemCount: notesProvider.notes.length),
         ),
-        builder: (context, notes, consumerChild) => notes.notes.isEmpty
-            ? consumerChild!
-            : ListView.builder(
-                itemBuilder: (context, index) => NoteListItem(
-                      note: notes.notes[index],
-                    ),
-                itemCount: notes.notes.length),
       ),
     );
   }

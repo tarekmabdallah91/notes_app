@@ -6,7 +6,11 @@ import 'package:provider/provider.dart';
 import 'pages/note_details_page.dart';
 import 'pages/notes_page.dart';
 
-void main() {
+void main() async {
+  // Avoid errors caused by flutter upgrade.
+// Importing 'package:flutter/widgets.dart' is required.
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await NotesDb().database();
   runApp(const NotesApp());
 }
 
@@ -15,7 +19,6 @@ const appTitle = 'Notes App';
 class NotesApp extends StatelessWidget {
   const NotesApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -26,8 +29,9 @@ class NotesApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: NotesPage(),
+        initialRoute: NotesPage.route,
         routes: {
+          NotesPage.route: (context) => NotesPage(),
           NoteDetailsPage.route: (context) => NoteDetailsPage(),
           AddNotePage.route: (context) => AddNotePage(),
         },

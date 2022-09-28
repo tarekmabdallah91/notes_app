@@ -1,20 +1,46 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:notes_app/models/note_model.dart';
 
-class NoteProvider with ChangeNotifier {
-  List<NoteModel> notes = [
-    NoteModel(title: 'Note1', body: 'booooody1'),
-    NoteModel(title: 'Note2', body: 'booooody2booooody2'),
-    NoteModel(title: 'Note3', body: 'booooody3booooody3booooody3'),
-    NoteModel(title: 'Note4', body: 'booooody4booooody4booooody4booooody4'),
-    NoteModel(
-        title: 'Note5', body: 'booooody5booooody5booooody5booooody5booooody5'),
-  ];
+import '../data/sql/notes_db.dart';
 
-  List<NoteModel> getNotes() => notes;
+class NoteProvider with ChangeNotifier {
+  List<NoteModel> notes = [];
+
+  List<NoteModel> getNotes() {
+    print('Notes count = ${notes.length}');
+    return notes;
+  }
+
+  NotesDb notesDb = NotesDb();
 
   void addNote(NoteModel noteModel) {
     notes.add(noteModel);
+    notifyListeners();
+    notesDb.insert(noteModel);
+  }
+
+  void updateNote(NoteModel noteModel) {
+    // notes.insert(noteModel.id!, noteModel);
+    notesDb.updateNote(noteModel);
+    notifyListeners();
+  }
+
+  Future<void> getAllNotes() async {
+    // notes = [];
+    final notesListInDb = await notesDb.getAllNotes();
+    print('notes before adding = ${notesListInDb.length}');
+    notes = notesListInDb.toList();
+    print('all notes = ${notes.length}');
+    notifyListeners(); // calling it make the UI rebuilt many times
+  }
+
+  NoteModel getNoteById(int id) {
+    return notesDb.getNoteById(id) as NoteModel;
+  }
+
+  void deleteNote(String id) {
+    // notes.removeAt(id);
+    notesDb.deleteNote(id);
     notifyListeners();
   }
 }
