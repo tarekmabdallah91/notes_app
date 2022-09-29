@@ -5,16 +5,19 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as syspaths;
 
+import '../utils/text_utils.dart';
+
 class ImageInput extends StatefulWidget {
   final Function onSelectImage;
+  final tag = 'ImageInput';
 
-  ImageInput(this.onSelectImage);
+  const ImageInput(this.onSelectImage, {super.key});
 
   @override
-  _ImageInputState createState() => _ImageInputState();
+  ImageInputState createState() => ImageInputState();
 }
 
-class _ImageInputState extends State<ImageInput> {
+class ImageInputState extends State<ImageInput> {
   XFile? _storedImage;
 
   Future<void> _takePicture() async {
@@ -29,8 +32,8 @@ class _ImageInputState extends State<ImageInput> {
     final fileName = path.basename(imageFile!.path);
     final savedImage =
         await File(imageFile.path).copy('${appDir.path}/$fileName');
-    print('${appDir.path}/$fileName');
-    print(savedImage.path);
+    TextUtils.printLog(widget.tag, '${appDir.path}/$fileName');
+    TextUtils.printLog(widget.tag, savedImage.path);
     widget.onSelectImage(savedImage);
   }
 

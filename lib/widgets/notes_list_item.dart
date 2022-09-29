@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:notes_app/provider/note_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes_app/cubit/note_cubit.dart';
 
 import '../models/note_model.dart';
 import '../pages/add_note_page.dart';
@@ -11,7 +11,6 @@ class NoteListItem extends StatelessWidget {
   const NoteListItem({super.key, required this.note});
 
   void editNote(BuildContext context) {
-    // open edit page
     AddNotePage.openAddNotePage(
       context,
       arguments: note,
@@ -19,7 +18,7 @@ class NoteListItem extends StatelessWidget {
   }
 
   void deleteNote(BuildContext context) {
-    Provider.of<NoteProvider>(context, listen: false).deleteNote(note.id);
+    BlocProvider.of<NoteCubit>(context).deleteNote(note.id);
   }
 
   @override
@@ -47,11 +46,11 @@ class NoteListItem extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () => editNote(context),
-                        icon: Icon(Icons.edit),
+                        icon: const Icon(Icons.edit),
                       ),
                       IconButton(
                         onPressed: () => deleteNote(context),
-                        icon: Icon(Icons.delete),
+                        icon: const Icon(Icons.delete),
                       ),
                     ]),
               ]),

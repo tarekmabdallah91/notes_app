@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/cubit/note_cubit.dart';
 import 'package:notes_app/pages/add_note_page.dart';
-import 'package:notes_app/provider/note_provider.dart';
-import 'package:provider/provider.dart';
 
 import 'pages/note_details_page.dart';
 import 'pages/notes_page.dart';
@@ -33,9 +31,9 @@ class NotesApp extends StatelessWidget {
         ),
         initialRoute: NotesPage.route,
         routes: {
-          NotesPage.route: (context) => NotesPage(),
-          NoteDetailsPage.route: (context) => NoteDetailsPage(),
-          AddNotePage.route: (context) => AddNotePage(),
+          NotesPage.route: (context) => const NotesPage(),
+          NoteDetailsPage.route: (context) => const NoteDetailsPage(),
+          AddNotePage.route: (context) => const AddNotePage(),
         },
       ),
     );

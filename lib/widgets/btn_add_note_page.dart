@@ -6,7 +6,7 @@ class AddNoteBtn extends StatelessWidget {
   final Function onTapBtn;
 
   const AddNoteBtn(
-      {required this.label, required this.iconDate, required this.onTapBtn});
+      {super.key, required this.label, required this.iconDate, required this.onTapBtn});
 
   @override
   Widget build(BuildContext context) {

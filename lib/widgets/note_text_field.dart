@@ -5,7 +5,7 @@ class NoteTextField extends StatelessWidget {
   final String label;
   final String text;
 
-  NoteTextField({required this.label, required this.text});
+  NoteTextField({super.key, required this.label, required this.text});
 
   TextEditingController getTextEditingController() => _textEditingController;
 

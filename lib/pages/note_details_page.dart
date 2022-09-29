@@ -3,6 +3,8 @@ import 'package:notes_app/models/note_model.dart';
 
 class NoteDetailsPage extends StatelessWidget {
   static const route = '/NoteDetailsPage';
+
+  const NoteDetailsPage({super.key});
   static void openNoteDetailsPage(BuildContext context, NoteModel note) {
     Navigator.of(context).pushNamed(NoteDetailsPage.route, arguments: note);
   }

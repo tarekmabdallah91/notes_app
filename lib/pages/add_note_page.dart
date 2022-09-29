@@ -5,15 +5,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:notes_app/cubit/note_cubit.dart';
 import 'package:notes_app/models/note_model.dart';
-import 'package:notes_app/provider/note_provider.dart';
-import 'package:provider/provider.dart';
 
+import '../utils/text_utils.dart';
 import '../widgets/btn_add_note_page.dart';
 import '../widgets/image_input.dart';
 import '../widgets/note_text_field.dart';
 
 class AddNotePage extends StatefulWidget {
   static const route = '/AddNotePage';
+  final tag = 'AddNotePage';
+
+  const AddNotePage({super.key});
 
   static void openAddNotePage(
     BuildContext context, {
@@ -38,10 +40,12 @@ class _AddNotePageState extends State<AddNotePage> {
     try {
       editableNote = ModalRoute.of(context)!.settings.arguments as NoteModel;
     } catch (error) {
-      print(error);
+      TextUtils.printLog(widget.tag, error);
     }
     isNewNote = editableNote == null;
-    if (null != editableNote) print('${editableNote!.id}');
+    if (null != editableNote) {
+      TextUtils.printLog(widget.tag, 'editable note id = ${editableNote!.id}');
+    }
     titleTextField = NoteTextField(
         label: 'Title', text: isNewNote ? '' : editableNote!.title);
     _titleController = titleTextField.getTextEditingController();
@@ -56,7 +60,7 @@ class _AddNotePageState extends State<AddNotePage> {
   }
 
   void saveNote() {
-    print('saveNote');
+    TextUtils.printLog(widget.tag, 'saveNote');
     if (_titleController.text.isEmpty ||
         _bodyController.text.isEmpty ||
         _pickedImage == null) return;
@@ -68,13 +72,12 @@ class _AddNotePageState extends State<AddNotePage> {
       noteTime: DateFormat('yyyy-MM-dd – HH:mm:ss').format(DateTime.now()),
       imageUrl: _pickedImage!.path,
     );
-    print('${noteModel.id}');
     BlocProvider.of<NoteCubit>(context).addNote(noteModel);
     Navigator.of(context).pop();
   }
 
   void updateNote() {
-    print('updateNote');
+    TextUtils.printLog(widget.tag, 'updateNote');
     if (_titleController.text.isEmpty ||
         _bodyController.text.isEmpty ||
         _pickedImage == null) return;
@@ -86,7 +89,7 @@ class _AddNotePageState extends State<AddNotePage> {
       noteTime: DateFormat('yyyy-MM-dd – HH:mm:ss').format(DateTime.now()),
       imageUrl: _pickedImage!.path,
     );
-    Provider.of<NoteProvider>(context, listen: false).updateNote(editableNote!);
+    BlocProvider.of<NoteCubit>(context).addNote(editableNote!);
     Navigator.of(context).pop();
   }
 

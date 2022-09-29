@@ -3,7 +3,10 @@ import 'package:notes_app/cubit/note_states.dart';
 import 'package:notes_app/data/sql/notes_db.dart';
 import 'package:notes_app/models/note_model.dart';
 
+import '../utils/text_utils.dart';
+
 class NoteCubit extends Cubit<NoteState> {
+  final tag = 'NoteCubit';
   NoteCubit() : super(InitNoteState());
 
   final NotesDb _notesD = NotesDb();
@@ -12,10 +15,9 @@ class NoteCubit extends Cubit<NoteState> {
   void addNote(NoteModel noteModel) async {
     try {
       await _notesD.insert(noteModel);
-      emit(AddNoteState());
       getAllNotes();
-    } on Exception catch (e) {
-      emit(FailureNoteState());
+    } on Exception catch (error) {
+      _handleExpections(error);
     }
   }
 
@@ -24,10 +26,24 @@ class NoteCubit extends Cubit<NoteState> {
     try {
       final notesListInDb = await _notesD.getAllNotes();
       notes = notesListInDb.toList();
-      print('notes = ${notes.length}');
+      TextUtils.printLog(tag, 'notes = ${notes.length}');
       emit(GetAllNotesState());
-    } catch (error) {
-      emit(FailureNoteState());
+    } on Exception catch (error) {
+      _handleExpections(error);
     }
+  }
+
+  void deleteNote(String id) async {
+    try {
+      await _notesD.deleteNote(id);
+      getAllNotes();
+    } on Exception catch (error) {
+      _handleExpections(error);
+    }
+  }
+
+  void _handleExpections(Exception exception) {
+    TextUtils.printLog(tag, exception);
+    emit(FailureNoteState());
   }
 }
