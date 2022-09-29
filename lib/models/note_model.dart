@@ -1,34 +1,40 @@
+import 'package:json_annotation/json_annotation.dart';
+import 'package:notes_app/models/converter/note_category_converter.dart';
+import 'package:notes_app/models/note_category.dart';
+part 'note_model.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class NoteModel {
-  String id;
-  String title;
-  String body;
-  String noteTime;
-  String imageUrl;
+  final String id;
+  final String title;
+  final String body;
+  final String noteTime;
+  final String imageUrl;
+  String noteCategoryJson;
 
   NoteModel({
     required this.id,
     required this.title,
     required this.body,
     required this.noteTime,
-    this.imageUrl = '',
+    required this.imageUrl,
+    required this.noteCategoryJson,
   });
 
-  // Convert a Note into a Map. The keys must correspond to the names of the
-  // columns in the database.
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'title': title,
-      'body': body,
-      'noteTime': noteTime,
-      'imageUrl': imageUrl,
-    };
+  factory NoteModel.fromJson(Map<String, dynamic> json) =>
+      _$NoteModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NoteModelToJson(this);
+
+  NoteCategory getNoteCategory() =>
+      const NoteCategoryConverter().fromJson(noteCategoryJson);
+
+  void setNoteCategory(NoteCategory noteCategory) {
+    noteCategoryJson = const NoteCategoryConverter().toJson(noteCategory);
   }
 
-  // Implement toString to make it easier to see information about
-  // each note when using the print statement.
   @override
   String toString() {
-    return 'Note{id: $id\nname: $title\nage: $body\ntime: $noteTime\nimageUrl $imageUrl }';
+    return 'Note{id: $id\nname: $title\nage: $body\nnoteCategory: $noteCategoryJson\ntime: $noteTime\nimageUrl $imageUrl }';
   }
 }

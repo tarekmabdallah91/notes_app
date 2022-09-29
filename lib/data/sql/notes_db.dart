@@ -1,3 +1,6 @@
+import 'package:notes_app/models/converter/note_category_converter.dart';
+import 'package:notes_app/models/note_category.dart';
+import 'package:notes_app/utils/text_utils.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:sqflite/sqlite_api.dart';
@@ -14,15 +17,15 @@ class NotesDb {
     // constructed for each platform.
     return sql.openDatabase(path.join(dbPath, dbName), onCreate: (db, version) {
       return db.execute(
-          'CREATE TABLE $tableName (`id` TEXT PRIMARY KEY NOT NULL, `title` TEXT NOT NULL, `body` TEXT NOT NULL, `noteTime` TEXT NOT NULL, `imageUrl` TEXT NOT NULL)');
-    }, version: 1);
+          'CREATE TABLE $tableName (`id` TEXT PRIMARY KEY NOT NULL, `title` TEXT NOT NULL, `body` TEXT NOT NULL, `noteTime` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `noteCategory` TEXT NOT NULL)');
+    }, version: 2);
   }
 
-  Future<void> insert(NoteModel noteModel) async {
+  Future<void> addNote(NoteModel noteModel) async {
     final db = await database();
     db.insert(
       tableName,
-      noteModel.toMap(),
+      noteModel.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -31,14 +34,9 @@ class NotesDb {
     final db = await database();
     final List<Map<String, dynamic>> maps = await db.query(tableName);
     // Convert the List<Map<String, dynamic> into a List<NoteModel>.
+    TextUtils.printLog('getAllNotes ', maps);
     return List.generate(maps.length, (index) {
-      return NoteModel(
-        id: maps[index]['id'],
-        title: maps[index]['title'],
-        body: maps[index]['body'],
-        noteTime: maps[index]['noteTime'],
-        imageUrl: maps[index]['imageUrl'],
-      );
+      return NoteModel.fromJson(maps[index]);
     });
   }
 
@@ -55,20 +53,7 @@ class NotesDb {
       body: map['body'],
       noteTime: map['noteTime'],
       imageUrl: map['imageUrl'],
-    );
-  }
-
-  ///  Warning: Always use whereArgs to pass arguments to a where statement. This helps safeguard against SQL injection attacks.
-  ///  Do not use string interpolation, such as where: "id = ${noteModel.id}"!
-  Future<void> updateNote(NoteModel noteModel) async {
-    final db = await database();
-    await db.update(
-      tableName,
-      noteModel.toMap(),
-      // Ensure that the noteModel has a matching id.
-      where: 'id = ?',
-      // Pass the noteModel's id as a whereArg to prevent SQL injection.
-      whereArgs: [noteModel.id],
+      noteCategoryJson: map['noteCategory'],
     );
   }
 
@@ -83,3 +68,37 @@ class NotesDb {
     );
   }
 }
+
+  // {
+  //   id: 2022-09-29 21:24:54.953626,
+  //   title: note 1,
+  //   body: body,
+  //   noteTime: 2022-09-29 – 21:24:54,
+  //   imageUrl: /data/user/0/com.example.notes_app/app_flutter/scaled_dd6d1aa1-1b48-4eea-98f6-50bdc8816d608722402423271091310.jpg, 
+  //   noteCategory: {name=sjadlf;, id=2022-09-29 21:24:54.986942}
+  //   }, 
+  //   {
+  //     id: 2022-09-29 21:27:33.947814, 
+  //     title: ASAS, 
+  //     body: SAs, 
+  //     noteTime: 2022-09-29 – 21:27:33, 
+  //     imageUrl: /data/user/0/com.example.notes_app/app_flutter/scaled_46095286-85a1-4ab9-8040-8c663e9e56ff4444298962513195102.jpg, 
+  //     noteCategory: {name=SAas, id=2022-09-29 21:27:33.993644}}, 
+      
+  //   {
+  //     id: 2022-09-29 21:39:33.782336, 
+  //     title: note 1, 
+  //     body: body 1, 
+  //     noteTime: 2022-09-29 – 21:39:33, 
+  //     imageUrl: /data/user/0/com.example.notes_app/app_flutter/scaled_21b2022f-4236-4209-913e-450251b107123572555048356674746.jpg, 
+  //     noteCategory: {"id":"2022-09-29 21:39:33.814677","name":"cate 1"}
+  //   }
+
+
+      // [{id: 2022-09-29 21:57:30.501362,
+      //  title: sadszd, 
+      //  body: sdasdas, 
+      //  noteTime: 2022-09-29 – 21:57:30, 
+      //  imageUrl: /data/user/0/com.example.notes_app/app_flutter/scaled_f3d2e858-fe1c-4fc0-8a32-612cd5082bc9692417294331547903.jpg, 
+      //  noteCategory: {name=sdasdasd, id=2022-09-29 21:57:30.507994}
+      // }]

@@ -14,7 +14,7 @@ class NoteCubit extends Cubit<NoteState> {
 
   void addNote(NoteModel noteModel) async {
     try {
-      await _notesD.insert(noteModel);
+      await _notesD.addNote(noteModel);
       getAllNotes();
     } on Exception catch (error) {
       _handleExpections(error);

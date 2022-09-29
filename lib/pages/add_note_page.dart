@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:notes_app/cubit/note_cubit.dart';
+import 'package:notes_app/models/note_category.dart';
 import 'package:notes_app/models/note_model.dart';
 
+import '../models/converter/note_category_converter.dart';
 import '../utils/text_utils.dart';
 import '../widgets/btn_add_note_page.dart';
 import '../widgets/image_input.dart';
@@ -29,8 +31,10 @@ class AddNotePage extends StatefulWidget {
 }
 
 class _AddNotePageState extends State<AddNotePage> {
-  late TextEditingController _titleController, _bodyController;
-  late NoteTextField titleTextField, bodyTextField;
+  late TextEditingController _titleController,
+      _bodyController,
+      _categoryController;
+  late NoteTextField titleTextField, bodyTextField, categoryTextField;
   File? _pickedImage;
   NoteModel? editableNote;
   late bool isNewNote;
@@ -45,13 +49,19 @@ class _AddNotePageState extends State<AddNotePage> {
     isNewNote = editableNote == null;
     if (null != editableNote) {
       TextUtils.printLog(widget.tag, 'editable note id = ${editableNote!.id}');
+      _pickedImage = File(editableNote!.imageUrl);
     }
+
     titleTextField = NoteTextField(
         label: 'Title', text: isNewNote ? '' : editableNote!.title);
     _titleController = titleTextField.getTextEditingController();
     bodyTextField =
         NoteTextField(label: 'Body', text: isNewNote ? '' : editableNote!.body);
     _bodyController = bodyTextField.getTextEditingController();
+    categoryTextField = NoteTextField(
+        label: 'Category',
+        text: isNewNote ? '' : editableNote!.noteCategoryJson);
+    _categoryController = categoryTextField.getTextEditingController();
     super.didChangeDependencies();
   }
 
@@ -71,6 +81,8 @@ class _AddNotePageState extends State<AddNotePage> {
       body: _bodyController.text,
       noteTime: DateFormat('yyyy-MM-dd – HH:mm:ss').format(DateTime.now()),
       imageUrl: _pickedImage!.path,
+      noteCategoryJson: const NoteCategoryConverter().toJson(NoteCategory(
+          id: DateTime.now().toString(), name: _categoryController.text)),
     );
     BlocProvider.of<NoteCubit>(context).addNote(noteModel);
     Navigator.of(context).pop();
@@ -88,6 +100,8 @@ class _AddNotePageState extends State<AddNotePage> {
       body: _bodyController.text,
       noteTime: DateFormat('yyyy-MM-dd – HH:mm:ss').format(DateTime.now()),
       imageUrl: _pickedImage!.path,
+      noteCategoryJson: const NoteCategoryConverter().toJson(NoteCategory(
+          id: DateTime.now().toString(), name: _categoryController.text)),
     );
     BlocProvider.of<NoteCubit>(context).addNote(editableNote!);
     Navigator.of(context).pop();
@@ -116,7 +130,14 @@ class _AddNotePageState extends State<AddNotePage> {
                     const SizedBox(
                       height: 10,
                     ),
-                    ImageInput(_selectImage),
+                    categoryTextField,
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ImageInput(
+                        onSelectImage: _selectImage,
+                        savedImagePath:
+                            isNewNote ? '' : editableNote!.imageUrl),
                   ],
                 ),
               ),

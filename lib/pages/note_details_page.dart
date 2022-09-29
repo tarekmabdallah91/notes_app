@@ -1,4 +1,6 @@
+import 'dart:io' as io;
 import 'package:flutter/material.dart';
+import 'package:notes_app/models/converter/note_category_converter.dart';
 import 'package:notes_app/models/note_model.dart';
 
 class NoteDetailsPage extends StatelessWidget {
@@ -19,10 +21,32 @@ class NoteDetailsPage extends StatelessWidget {
       ),
       body: Column(children: [
         Text(note.body),
+        SizedBox(
+          height: 10,
+        ),
         Text(
           note.noteTime,
         ),
-        //  note.imageUrl.isEmpty ? Spacer() : Image.network(note.imageUrl),
+        SizedBox(
+          height: 10,
+        ),
+        // Text(
+        //   const NoteCategoryConverter().fromJson(note.noteCategoryJson).name,
+        // ),
+        SizedBox(
+          height: 10,
+        ),
+        note.imageUrl.isEmpty
+            ? Spacer()
+            : Container(
+                height: 250,
+                width: double.infinity,
+                child: Image.file(
+                  io.File(note.imageUrl),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+              ),
       ]),
     );
   }

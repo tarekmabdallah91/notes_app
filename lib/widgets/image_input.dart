@@ -8,30 +8,28 @@ import 'package:path_provider/path_provider.dart' as syspaths;
 import '../utils/text_utils.dart';
 
 class ImageInput extends StatefulWidget {
+  String savedImagePath;
   final Function onSelectImage;
   final tag = 'ImageInput';
 
-  const ImageInput(this.onSelectImage, {super.key});
+  ImageInput({required this.onSelectImage, this.savedImagePath = ''});
 
   @override
   ImageInputState createState() => ImageInputState();
 }
 
 class ImageInputState extends State<ImageInput> {
-  XFile? _storedImage;
-
   Future<void> _takePicture() async {
     final imageFile = await ImagePicker().pickImage(
       source: ImageSource.camera,
       maxWidth: 600,
     );
     setState(() {
-      _storedImage = imageFile;
+      widget.savedImagePath = imageFile!.path;
     });
     final appDir = await syspaths.getApplicationDocumentsDirectory();
     final fileName = path.basename(imageFile!.path);
-    final savedImage =
-        await File(imageFile.path).copy('${appDir.path}/$fileName');
+    final savedImage = await File(imageFile.path).copy('${appDir.path}/$fileName');
     TextUtils.printLog(widget.tag, '${appDir.path}/$fileName');
     TextUtils.printLog(widget.tag, savedImage.path);
     widget.onSelectImage(savedImage);
@@ -48,15 +46,15 @@ class ImageInputState extends State<ImageInput> {
             border: Border.all(width: 1, color: Colors.grey),
           ),
           alignment: Alignment.center,
-          child: _storedImage != null
-              ? Image.file(
-                  File(_storedImage!.path),
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                )
-              : const Text(
+          child: widget.savedImagePath.isEmpty
+              ? const Text(
                   'No Image Taken',
                   textAlign: TextAlign.center,
+                )
+              : Image.file(
+                  File(widget.savedImagePath),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
                 ),
         ),
         const SizedBox(
