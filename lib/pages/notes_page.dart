@@ -31,7 +31,7 @@ class NotesPage extends StatelessWidget {
           return const Center(
             child: CircularProgressIndicator(),
           );
-        } else if (state is GetAllNotesState) {
+        } else if (state is GetAllNotesState || state is GetNoteByIdState) {
           return noteCubit.notes.isEmpty
               ? const Center(child: Text('please add notes !'))
               : ListView.builder(

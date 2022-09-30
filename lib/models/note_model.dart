@@ -28,13 +28,6 @@ class NoteModel {
 
   Map<String, dynamic> toJson() => _$NoteModelToJson(this);
 
-  // NoteCategory getNoteCategory() =>
-  //     const NoteCategoryConverter().fromJson(noteCategoryJson);
-
-  // void setNoteCategory(NoteCategory noteCategory) {
-  //   noteCategoryJson = const NoteCategoryConverter().toJson(noteCategory);
-  // }
-
   @override
   String toString() {
     return 'Note{id: $id\nname: $title\nage: $body\nnoteCategory: $noteCategory\ntime: $noteTime\nimageUrl $imageUrl }';

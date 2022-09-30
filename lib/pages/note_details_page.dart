@@ -1,53 +1,79 @@
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
-import 'package:notes_app/models/converter/note_category_converter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes_app/cubit/note_states.dart';
 import 'package:notes_app/models/note_model.dart';
+
+import '../cubit/note_cubit.dart';
+import '../utils/text_utils.dart';
 
 class NoteDetailsPage extends StatelessWidget {
   static const route = '/NoteDetailsPage';
+  NoteModel? note;
 
-  const NoteDetailsPage({super.key});
-  static void openNoteDetailsPage(BuildContext context, NoteModel note) {
-    Navigator.of(context).pushNamed(NoteDetailsPage.route, arguments: note);
+  NoteDetailsPage({super.key});
+
+  static void openNoteDetailsPage(
+    BuildContext context,
+    String noteId,
+  ) {
+    Navigator.of(context).pushNamed(NoteDetailsPage.route, arguments: noteId);
+  }
+
+  void getNoteById(BuildContext context) async {
+    final noteId = ModalRoute.of(context)!.settings.arguments as String;
+    NoteCubit noteCubit = BlocProvider.of<NoteCubit>(context);
+    await noteCubit.getNoteById(noteId);
   }
 
   @override
   Widget build(BuildContext context) {
-    final note = ModalRoute.of(context)!.settings.arguments as NoteModel;
+    getNoteById(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(note.title),
-      ),
-      body: Column(children: [
-        Text(note.body),
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          note.noteTime,
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-           note.noteCategory.name,
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        note.imageUrl.isEmpty
-            ? Spacer()
-            : Container(
-                height: 250,
-                width: double.infinity,
-                child: Image.file(
-                  io.File(note.imageUrl),
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
-              ),
-      ]),
-    );
+    return BlocBuilder<NoteCubit, NoteState>(builder: (context, state) {
+      if (state is GetNoteByIdState) {
+        note = state.selectedNoteModel;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(note!.title),
+          ),
+          body: Column(children: [
+            Text(note!.body),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              note!.noteTime,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              note!.noteCategory.name,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            note!.imageUrl.isEmpty
+                ? Spacer()
+                : Container(
+                    height: 250,
+                    width: double.infinity,
+                    child: Image.file(
+                      io.File(note!.imageUrl),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                  ),
+          ]),
+        );
+      } else {
+        return Scaffold(
+          body: Center(
+            child: Text('error'),
+          ),
+        );
+      }
+    });
   }
 }

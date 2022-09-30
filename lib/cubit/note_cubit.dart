@@ -9,12 +9,13 @@ class NoteCubit extends Cubit<NoteState> {
   final tag = 'NoteCubit';
   NoteCubit() : super(InitNoteState());
 
-  final NotesDb _notesD = NotesDb();
+  final NotesDb _notesDb = NotesDb();
   List<NoteModel> notes = [];
+  NoteModel? noteModel;
 
   void addNote(NoteModel noteModel) async {
     try {
-      await _notesD.addNote(noteModel);
+      await _notesDb.addNote(noteModel);
       getAllNotes();
     } on Exception catch (error) {
       _handleExpections(error);
@@ -24,7 +25,7 @@ class NoteCubit extends Cubit<NoteState> {
   Future<void> getAllNotes() async {
     emit(InitNoteState());
     try {
-      final notesListInDb = await _notesD.getAllNotes();
+      final notesListInDb = await _notesDb.getAllNotes();
       notes = notesListInDb.toList();
       TextUtils.printLog(tag, 'notes = ${notes.length}');
       emit(GetAllNotesState());
@@ -33,9 +34,21 @@ class NoteCubit extends Cubit<NoteState> {
     }
   }
 
+  Future<void> getNoteById(String noteId) async {
+    emit(InitNoteState());
+    try {
+      final noteInDb = await _notesDb.getNoteById(noteId);
+      TextUtils.printLog(tag, 'getNoteById notes = ${noteInDb.title}');
+      noteModel = noteInDb;
+      // emit(GetNoteByIdState(noteInDb));
+    } on Exception catch (error) {
+      _handleExpections(error);
+    }
+  }
+
   void deleteNote(String id) async {
     try {
-      await _notesD.deleteNote(id);
+      await _notesDb.deleteNote(id);
       getAllNotes();
     } on Exception catch (error) {
       _handleExpections(error);

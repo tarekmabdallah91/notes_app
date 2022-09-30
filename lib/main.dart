@@ -32,7 +32,7 @@ class NotesApp extends StatelessWidget {
         initialRoute: NotesPage.route,
         routes: {
           NotesPage.route: (context) => const NotesPage(),
-          NoteDetailsPage.route: (context) => const NoteDetailsPage(),
+          NoteDetailsPage.route: (context) => NoteDetailsPage(),
           AddNotePage.route: (context) => const AddNotePage(),
         },
       ),

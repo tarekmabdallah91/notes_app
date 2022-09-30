@@ -6,8 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:notes_app/cubit/note_cubit.dart';
 import 'package:notes_app/models/note_category.dart';
 import 'package:notes_app/models/note_model.dart';
-
-import '../models/converter/note_category_converter.dart';
 import '../utils/text_utils.dart';
 import '../widgets/btn_add_note_page.dart';
 import '../widgets/image_input.dart';
@@ -42,7 +40,10 @@ class _AddNotePageState extends State<AddNotePage> {
   @override
   void didChangeDependencies() {
     try {
-      editableNote = ModalRoute.of(context)!.settings.arguments as NoteModel;
+      final noteId = ModalRoute.of(context)!.settings.arguments as String;
+      NoteCubit noteCubit = BlocProvider.of<NoteCubit>(context);
+      noteCubit.getNoteById(noteId); // TODO to fix noteCubit.noteModel as it's null now 
+      editableNote = noteCubit.noteModel;
     } catch (error) {
       TextUtils.printLog(widget.tag, error);
     }

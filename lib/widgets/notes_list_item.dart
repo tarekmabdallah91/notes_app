@@ -8,17 +8,28 @@ import '../pages/note_details_page.dart';
 
 class NoteListItem extends StatelessWidget {
   final NoteModel note;
-  const NoteListItem({super.key, required this.note});
+
+  const NoteListItem({
+    super.key,
+    required this.note,
+  });
 
   void editNote(BuildContext context) {
     AddNotePage.openAddNotePage(
       context,
-      arguments: note,
+      arguments: note.id,
     );
   }
 
   void deleteNote(BuildContext context) {
     BlocProvider.of<NoteCubit>(context).deleteNote(note.id);
+  }
+
+  void openNoteDetailsPage(BuildContext context) {
+    NoteDetailsPage.openNoteDetailsPage(
+      context,
+      note.id,
+    );
   }
 
   @override
@@ -28,9 +39,7 @@ class NoteListItem extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       alignment: Alignment.center,
       child: GestureDetector(
-        onTap: () {
-          NoteDetailsPage.openNoteDetailsPage(context, note);
-        },
+        onTap: () => openNoteDetailsPage(context),
         child: Card(
           elevation: 5,
           child: Column(

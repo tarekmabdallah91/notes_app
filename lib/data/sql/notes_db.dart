@@ -43,21 +43,14 @@ class NotesDb {
     });
   }
 
-  Future<NoteModel> getNoteById(int id) async {
+  Future<NoteModel> getNoteById(String id) async {
     final db = await database();
-    final Map<String, dynamic> map = (await db.transaction((txn) => txn.query(
+    var map = await db.transaction((txn) => txn.query(
           tableName,
           where: 'id = ?',
           whereArgs: [id],
-        )) as Map<String, dynamic>);
-    return NoteModel(
-      id: map['id'],
-      title: map['title'],
-      body: map['body'],
-      noteTime: map['noteTime'],
-      imageUrl: map['imageUrl'],
-      noteCategory: map['noteCategory'],
-    );
+        ));
+    return NoteModel.fromJson(map.first);
   }
 
   Future<void> deleteNote(String id) async {
@@ -71,37 +64,3 @@ class NotesDb {
         ));
   }
 }
-
-  // {
-  //   id: 2022-09-29 21:24:54.953626,
-  //   title: note 1,
-  //   body: body,
-  //   noteTime: 2022-09-29 – 21:24:54,
-  //   imageUrl: /data/user/0/com.example.notes_app/app_flutter/scaled_dd6d1aa1-1b48-4eea-98f6-50bdc8816d608722402423271091310.jpg, 
-  //   noteCategory: {name=sjadlf;, id=2022-09-29 21:24:54.986942}
-  //   }, 
-  //   {
-  //     id: 2022-09-29 21:27:33.947814, 
-  //     title: ASAS, 
-  //     body: SAs, 
-  //     noteTime: 2022-09-29 – 21:27:33, 
-  //     imageUrl: /data/user/0/com.example.notes_app/app_flutter/scaled_46095286-85a1-4ab9-8040-8c663e9e56ff4444298962513195102.jpg, 
-  //     noteCategory: {name=SAas, id=2022-09-29 21:27:33.993644}}, 
-      
-  //   {
-  //     id: 2022-09-29 21:39:33.782336, 
-  //     title: note 1, 
-  //     body: body 1, 
-  //     noteTime: 2022-09-29 – 21:39:33, 
-  //     imageUrl: /data/user/0/com.example.notes_app/app_flutter/scaled_21b2022f-4236-4209-913e-450251b107123572555048356674746.jpg, 
-  //     noteCategory: {"id":"2022-09-29 21:39:33.814677","name":"cate 1"}
-  //   }
-
-
-      // [{id: 2022-09-29 21:57:30.501362,
-      //  title: sadszd, 
-      //  body: sdasdas, 
-      //  noteTime: 2022-09-29 – 21:57:30, 
-      //  imageUrl: /data/user/0/com.example.notes_app/app_flutter/scaled_f3d2e858-fe1c-4fc0-8a32-612cd5082bc9692417294331547903.jpg, 
-      //  noteCategory: {name=sdasdasd, id=2022-09-29 21:57:30.507994}
-      // }]
