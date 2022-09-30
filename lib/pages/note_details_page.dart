@@ -30,9 +30,9 @@ class NoteDetailsPage extends StatelessWidget {
         SizedBox(
           height: 10,
         ),
-        // Text(
-        //   const NoteCategoryConverter().fromJson(note.noteCategoryJson).name,
-        // ),
+        Text(
+           note.noteCategory.name,
+        ),
         SizedBox(
           height: 10,
         ),

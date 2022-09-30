@@ -12,7 +12,8 @@ NoteModel _$NoteModelFromJson(Map<String, dynamic> jsonMap) => NoteModel(
       body: jsonMap['body'] as String,
       noteTime: jsonMap['noteTime'] as String,
       imageUrl: jsonMap['imageUrl'] as String,
-      noteCategoryJson: jsonMap['noteCategory'] as String,
+      noteCategory:
+          const NoteCategoryConverter().fromJson(jsonMap['noteCategory']),
     );
 
 // const NoteCategoryConverter()
@@ -42,7 +43,7 @@ Map<String, dynamic> _$NoteModelToJson(NoteModel instance) => <String, dynamic>{
       'body': instance.body,
       'noteTime': instance.noteTime,
       'imageUrl': instance.imageUrl,
-      'noteCategory': instance.noteCategoryJson,
+      'noteCategory': const NoteCategoryConverter().toJson(instance.noteCategory),
       // instance.noteCategory.toJson(),
       // const NoteCategoryConverter().toJson(instance.noteCategory),
     };

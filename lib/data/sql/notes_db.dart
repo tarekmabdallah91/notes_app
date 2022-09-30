@@ -53,7 +53,7 @@ class NotesDb {
       body: map['body'],
       noteTime: map['noteTime'],
       imageUrl: map['imageUrl'],
-      noteCategoryJson: map['noteCategory'],
+      noteCategory: map['noteCategory'],
     );
   }
 

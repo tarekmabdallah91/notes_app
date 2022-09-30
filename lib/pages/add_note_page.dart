@@ -60,7 +60,7 @@ class _AddNotePageState extends State<AddNotePage> {
     _bodyController = bodyTextField.getTextEditingController();
     categoryTextField = NoteTextField(
         label: 'Category',
-        text: isNewNote ? '' : editableNote!.noteCategoryJson);
+        text: isNewNote ? '' : editableNote!.noteCategory.name);
     _categoryController = categoryTextField.getTextEditingController();
     super.didChangeDependencies();
   }
@@ -81,8 +81,10 @@ class _AddNotePageState extends State<AddNotePage> {
       body: _bodyController.text,
       noteTime: DateFormat('yyyy-MM-dd – HH:mm:ss').format(DateTime.now()),
       imageUrl: _pickedImage!.path,
-      noteCategoryJson: const NoteCategoryConverter().toJson(NoteCategory(
-          id: DateTime.now().toString(), name: _categoryController.text)),
+      noteCategory: NoteCategory(
+        id: DateTime.now().toString(),
+        name: _categoryController.text,
+      ),
     );
     BlocProvider.of<NoteCubit>(context).addNote(noteModel);
     Navigator.of(context).pop();
@@ -100,8 +102,8 @@ class _AddNotePageState extends State<AddNotePage> {
       body: _bodyController.text,
       noteTime: DateFormat('yyyy-MM-dd – HH:mm:ss').format(DateTime.now()),
       imageUrl: _pickedImage!.path,
-      noteCategoryJson: const NoteCategoryConverter().toJson(NoteCategory(
-          id: DateTime.now().toString(), name: _categoryController.text)),
+      noteCategory: NoteCategory(
+          id: DateTime.now().toString(), name: _categoryController.text),
     );
     BlocProvider.of<NoteCubit>(context).addNote(editableNote!);
     Navigator.of(context).pop();

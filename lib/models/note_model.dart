@@ -10,7 +10,8 @@ class NoteModel {
   final String body;
   final String noteTime;
   final String imageUrl;
-  String noteCategoryJson;
+  final NoteCategory noteCategory;
+  // String noteCategoryJson;
 
   NoteModel({
     required this.id,
@@ -18,7 +19,8 @@ class NoteModel {
     required this.body,
     required this.noteTime,
     required this.imageUrl,
-    required this.noteCategoryJson,
+    required this.noteCategory,
+    // required this.noteCategoryJson,
   });
 
   factory NoteModel.fromJson(Map<String, dynamic> json) =>
@@ -26,15 +28,15 @@ class NoteModel {
 
   Map<String, dynamic> toJson() => _$NoteModelToJson(this);
 
-  NoteCategory getNoteCategory() =>
-      const NoteCategoryConverter().fromJson(noteCategoryJson);
+  // NoteCategory getNoteCategory() =>
+  //     const NoteCategoryConverter().fromJson(noteCategoryJson);
 
-  void setNoteCategory(NoteCategory noteCategory) {
-    noteCategoryJson = const NoteCategoryConverter().toJson(noteCategory);
-  }
+  // void setNoteCategory(NoteCategory noteCategory) {
+  //   noteCategoryJson = const NoteCategoryConverter().toJson(noteCategory);
+  // }
 
   @override
   String toString() {
-    return 'Note{id: $id\nname: $title\nage: $body\nnoteCategory: $noteCategoryJson\ntime: $noteTime\nimageUrl $imageUrl }';
+    return 'Note{id: $id\nname: $title\nage: $body\nnoteCategory: $noteCategory\ntime: $noteTime\nimageUrl $imageUrl }';
   }
 }
