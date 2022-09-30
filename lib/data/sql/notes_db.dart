@@ -23,16 +23,19 @@ class NotesDb {
 
   Future<void> addNote(NoteModel noteModel) async {
     final db = await database();
-    db.insert(
-      tableName,
-      noteModel.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+    db.transaction(
+      (txn) => txn.insert(
+        tableName,
+        noteModel.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      ),
     );
   }
 
   Future<List<NoteModel>> getAllNotes() async {
     final db = await database();
-    final List<Map<String, dynamic>> maps = await db.query(tableName);
+    final List<Map<String, dynamic>> maps =
+        await db.transaction((txn) => txn.query(tableName));
     // Convert the List<Map<String, dynamic> into a List<NoteModel>.
     TextUtils.printLog('getAllNotes ', maps);
     return List.generate(maps.length, (index) {
@@ -42,11 +45,11 @@ class NotesDb {
 
   Future<NoteModel> getNoteById(int id) async {
     final db = await database();
-    final Map<String, dynamic> map = (await db.query(
-      tableName,
-      where: 'id = ?',
-      whereArgs: [id],
-    )) as Map<String, dynamic>;
+    final Map<String, dynamic> map = (await db.transaction((txn) => txn.query(
+          tableName,
+          where: 'id = ?',
+          whereArgs: [id],
+        )) as Map<String, dynamic>);
     return NoteModel(
       id: map['id'],
       title: map['title'],
@@ -59,13 +62,13 @@ class NotesDb {
 
   Future<void> deleteNote(String id) async {
     final db = await database();
-    await db.delete(
-      tableName,
-      // Use a `where` clause to delete a specific NoteModel.
-      where: 'id = ?',
-      // Pass the NoteModel's id as a whereArg to prevent SQL injection.
-      whereArgs: [id],
-    );
+    await db.transaction((txn) => txn.delete(
+          tableName,
+          // Use a `where` clause to delete a specific NoteModel.
+          where: 'id = ?',
+          // Pass the NoteModel's id as a whereArg to prevent SQL injection.
+          whereArgs: [id],
+        ));
   }
 }
 
