@@ -11,18 +11,30 @@ class NoteCubit extends Cubit<NoteState> {
 
   final NotesDb _notesDb = NotesDb();
   List<NoteModel> notes = [];
-  NoteModel? noteModel;
 
   void addNote(NoteModel noteModel) async {
     try {
       await _notesDb.addNote(noteModel);
-      getAllNotes();
+      int index = getNoteIndexFromNotesList(noteModel);
+      if (index >= 0) {
+        TextUtils.printLog(tag, 'index = $index');
+        notes[index] = noteModel;
+        emit(UpdateNoteState());
+      } else {
+        notes.add(noteModel);
+        emit(AddNoteState());
+      }
     } on Exception catch (error) {
       _handleExpections(error);
     }
   }
 
+  int getNoteIndexFromNotesList(NoteModel noteModel) {
+    return notes.indexWhere((element) => element.id == noteModel.id);
+  }
+
   Future<void> getAllNotes() async {
+    TextUtils.printLog(tag, 'getAllNotes Cubit');
     emit(InitNoteState());
     try {
       final notesListInDb = await _notesDb.getAllNotes();
@@ -34,22 +46,19 @@ class NoteCubit extends Cubit<NoteState> {
     }
   }
 
-  Future<void> getNoteById(String noteId) async {
-    emit(InitNoteState());
+  NoteModel? getNoteById(String noteId) {
     try {
-      final noteInDb = await _notesDb.getNoteById(noteId);
-      TextUtils.printLog(tag, 'getNoteById notes = ${noteInDb.title}');
-      noteModel = noteInDb;
-      // emit(GetNoteByIdState(noteInDb));
+      return notes.firstWhere((element) => element.id == noteId);
     } on Exception catch (error) {
       _handleExpections(error);
+      return null;
     }
   }
 
   void deleteNote(String id) async {
     try {
       await _notesDb.deleteNote(id);
-      getAllNotes();
+      emit(DeleteNoteState());
     } on Exception catch (error) {
       _handleExpections(error);
     }

@@ -20,60 +20,48 @@ class NoteDetailsPage extends StatelessWidget {
     Navigator.of(context).pushNamed(NoteDetailsPage.route, arguments: noteId);
   }
 
-  void getNoteById(BuildContext context) async {
+  void getNoteById(BuildContext context) {
     final noteId = ModalRoute.of(context)!.settings.arguments as String;
     NoteCubit noteCubit = BlocProvider.of<NoteCubit>(context);
-    await noteCubit.getNoteById(noteId);
+    note = noteCubit.getNoteById(noteId);
   }
 
   @override
   Widget build(BuildContext context) {
     getNoteById(context);
-
-    return BlocBuilder<NoteCubit, NoteState>(builder: (context, state) {
-      if (state is GetNoteByIdState) {
-        note = state.selectedNoteModel;
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(note!.title),
-          ),
-          body: Column(children: [
-            Text(note!.body),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              note!.noteTime,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              note!.noteCategory.name,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            note!.imageUrl.isEmpty
-                ? Spacer()
-                : Container(
-                    height: 250,
-                    width: double.infinity,
-                    child: Image.file(
-                      io.File(note!.imageUrl),
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    ),
-                  ),
-          ]),
-        );
-      } else {
-        return Scaffold(
-          body: Center(
-            child: Text('error'),
-          ),
-        );
-      }
-    });
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(note!.title),
+      ),
+      body: Column(children: [
+        Text(note!.body),
+        const SizedBox(
+          height: 10,
+        ),
+        Text(
+          note!.noteTime,
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Text(
+          note!.noteCategory.name,
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        note!.imageUrl.isEmpty
+            ? const Spacer()
+            : SizedBox(
+                height: 250,
+                width: double.infinity,
+                child: Image.file(
+                  io.File(note!.imageUrl),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+              ),
+      ]),
+    );
   }
 }

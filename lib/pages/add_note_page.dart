@@ -42,8 +42,7 @@ class _AddNotePageState extends State<AddNotePage> {
     try {
       final noteId = ModalRoute.of(context)!.settings.arguments as String;
       NoteCubit noteCubit = BlocProvider.of<NoteCubit>(context);
-      noteCubit.getNoteById(noteId); // TODO to fix noteCubit.noteModel as it's null now 
-      editableNote = noteCubit.noteModel;
+      editableNote = noteCubit.getNoteById(noteId);
     } catch (error) {
       TextUtils.printLog(widget.tag, error);
     }

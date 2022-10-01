@@ -27,11 +27,15 @@ class NotesPage extends StatelessWidget {
         ],
       ),
       body: BlocBuilder<NoteCubit, NoteState>(builder: (context, state) {
+        TextUtils.printLog(route, state);
         if (state is InitNoteState) {
           return const Center(
             child: CircularProgressIndicator(),
           );
-        } else if (state is GetAllNotesState || state is GetNoteByIdState) {
+        } else if (state is GetAllNotesState ||
+            state is AddNoteState ||
+            state is UpdateNoteState ||
+            state is DeleteNoteState) {
           return noteCubit.notes.isEmpty
               ? const Center(child: Text('please add notes !'))
               : ListView.builder(

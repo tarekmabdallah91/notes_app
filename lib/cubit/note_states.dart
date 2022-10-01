@@ -5,11 +5,8 @@ abstract class NoteState {}
 class InitNoteState extends NoteState {}
 
 class GetAllNotesState extends NoteState {}
-
-class GetNoteByIdState extends NoteState {
-  final NoteModel selectedNoteModel;
-
-  GetNoteByIdState(this.selectedNoteModel);
-}
+class AddNoteState extends NoteState {}
+class UpdateNoteState extends NoteState {}
+class DeleteNoteState extends NoteState {}
 
 class FailureNoteState extends NoteState {}
