@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/cubit/note_cubit.dart';
+import 'package:notes_api/notes_api.dart';
+import 'package:notes_app/home/cubit/note_cubit.dart';
 
 import '../models/note_model.dart';
 import '../pages/add_note_page.dart';
 import '../pages/note_details_page.dart';
 
 class NoteListItem extends StatelessWidget {
-  final NoteModel note;
+  final Note note;
 
   const NoteListItem({
     super.key,
@@ -22,7 +23,7 @@ class NoteListItem extends StatelessWidget {
   }
 
   void deleteNote(BuildContext context) {
-    BlocProvider.of<NoteCubit>(context).deleteNote(note.id);
+    // BlocProvider.of<NoteCubit>(context).deleteNote(note.id);
   }
 
   void openNoteDetailsPage(BuildContext context) {

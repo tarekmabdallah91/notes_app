@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:notes_app/cubit/note_cubit.dart';
+import 'package:notes_app/home/cubit/note_cubit.dart';
 import 'package:notes_app/models/note_category.dart';
 import 'package:notes_app/models/note_model.dart';
 import '../utils/text_utils.dart';
@@ -42,7 +42,7 @@ class _AddNotePageState extends State<AddNotePage> {
     try {
       final noteId = ModalRoute.of(context)!.settings.arguments as String;
       NoteCubit noteCubit = BlocProvider.of<NoteCubit>(context);
-      editableNote = noteCubit.getNoteById(noteId);
+      // editableNote = noteCubit.getNoteById(noteId);
     } catch (error) {
       TextUtils.printLog(widget.tag, error);
     }
@@ -86,7 +86,7 @@ class _AddNotePageState extends State<AddNotePage> {
         name: _categoryController.text,
       ),
     );
-    BlocProvider.of<NoteCubit>(context).addNote(noteModel);
+    // BlocProvider.of<NoteCubit>(context).addNote(noteModel);
     Navigator.of(context).pop();
   }
 
@@ -105,7 +105,7 @@ class _AddNotePageState extends State<AddNotePage> {
       noteCategory: NoteCategory(
           id: DateTime.now().toString(), name: _categoryController.text),
     );
-    BlocProvider.of<NoteCubit>(context).addNote(editableNote!);
+    // BlocProvider.of<NoteCubit>(context).addNote(editableNote!);
     Navigator.of(context).pop();
   }
 
