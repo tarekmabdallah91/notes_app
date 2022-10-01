@@ -12,6 +12,12 @@ class NoteCubit extends Cubit<NoteState> {
   final NotesDb _notesDb = NotesDb();
   List<NoteModel> notes = [];
 
+  @override
+  void onChange(Change<NoteState> change) {
+    super.onChange(change);
+    TextUtils.printLog('NoteCubit onChange', '$change');
+  }
+
   void addNote(NoteModel noteModel) async {
     try {
       await _notesDb.addNote(noteModel);
