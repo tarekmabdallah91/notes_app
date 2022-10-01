@@ -18,6 +18,12 @@ class NoteCubit extends Cubit<NoteState> {
     TextUtils.printLog('NoteCubit onChange', '$change');
   }
 
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    TextUtils.printLog('NoteCubit onError', '$error, $stackTrace');
+    super.onError(error, stackTrace);
+  }
+
   void addNote(NoteModel noteModel) async {
     try {
       await _notesDb.addNote(noteModel);
