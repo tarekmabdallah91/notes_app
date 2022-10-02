@@ -1,5 +1,3 @@
-
-
 import '../notes_api.dart';
 
 abstract class NotesApi {
@@ -33,12 +31,12 @@ abstract class NotesApi {
   /// Deletes all completed Notes.
   ///
   /// Returns the number of deleted Notes.
-  // Future<int> clearCompleted();
+  Future<int> clearArchived();
 
   /// Sets the `isCompleted` state of all Notes to the given value.
   ///
   /// Returns the number of updated Notes.
-  // Future<int> completeAll({required bool isCompleted});
+  Future<int> archiveAll({required bool isArchived});
 }
 
 /// Error thrown when a [Note] with a given id is not found.

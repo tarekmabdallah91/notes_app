@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/pages/stats_page.dart';
 
 import '../../pages/edit_note_page.dart';
-import '../../pages/notes_over_view_page.dart';
+import '../../nots_over_view/view/notes_overview_page.dart';
 import '../cubit/home_cubit.dart';
 
 class HomePage extends StatelessWidget {
@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<HomeCubit>(
       create: (_) => HomeCubit(),
       child: const HomeView(),
     );

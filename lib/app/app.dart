@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/home/home.dart';
 import 'package:notes_repository/note_repository.dart';
+import '../l10n/l10n.dart';
 import '../theme/theme.dart';
 
 class NotesApp extends StatelessWidget {
@@ -12,7 +13,7 @@ class NotesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
-      value: NotesRepository,
+      value: notesRepository,
       child: const AppView(),
     );
   }
@@ -26,8 +27,8 @@ class AppView extends StatelessWidget {
     return MaterialApp(
       theme: FlutterNotesTheme.light,
       darkTheme: FlutterNotesTheme.dark,
-      // localizationsDelegates: AppLocalizations.localizationsDelegates,
-      // supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: const HomePage(),
     );
   }

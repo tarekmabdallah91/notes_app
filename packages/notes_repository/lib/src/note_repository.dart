@@ -1,6 +1,5 @@
 import 'package:notes_api/notes_api.dart';
 
-
 /// {@template Notes_repository}
 /// A repository that handles Note related requests.
 /// {@endtemplate}
@@ -29,11 +28,11 @@ class NotesRepository {
   /// Deletes all completed Notes.
   ///
   /// Returns the number of deleted Notes.
-  // Future<int> clearCompleted() => _NotesApi.clearCompleted();
+  Future<int> clearArchived() => _NotesApi.clearArchived();
 
   // /// Sets the `isCompleted` state of all Notes to the given value.
   // ///
   // /// Returns the number of updated Notes.
-  // Future<int> completeAll({required bool isCompleted}) =>
-  //     _NotesApi.completeAll(isCompleted: isCompleted);
+  Future<int> archiveAll({required bool isArchived}) =>
+      _NotesApi.archiveAll(isArchived: isArchived);
 }

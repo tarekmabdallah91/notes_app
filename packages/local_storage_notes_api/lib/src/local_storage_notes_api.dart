@@ -76,27 +76,26 @@ class LocalStorageNotesApi extends NotesApi {
     }
   }
 
-  // @override
-  // Future<int> clearCompleted() async {
-  //   final Notes = [..._NoteStreamController.value];
-  //   final completedNotesAmount = Notes.where((t) => t.isCompleted).length;
-  //   Notes.removeWhere((t) => t.isCompleted);
-  //   _NoteStreamController.add(Notes);
-  //   await _setValue(kNotesCollectionKey, json.encode(Notes));
-  //   return completedNotesAmount;
-  // }
+  @override
+  Future<int> clearArchived() async {
+    final Notes = [..._NoteStreamController.value];
+    final completedNotesAmount = Notes.where((t) => t.isArchived).length;
+    Notes.removeWhere((t) => t.isArchived);
+    _NoteStreamController.add(Notes);
+    await _setValue(kNotesCollectionKey, json.encode(Notes));
+    return completedNotesAmount;
+  }
 
-  // @override
-  // Future<int> completeAll({required bool isCompleted}) async {
-  //   final Notes = [..._NoteStreamController.value];
-  //   final changedNotesAmount =
-  //       Notes.where((t) => t.isCompleted != isCompleted).length;
-  //   final newNotes = [
-  //     for (final Note in Notes) Note.copyWith(isCompleted: isCompleted)
-  //   ];
-  //   _NoteStreamController.add(newNotes);
-  //   await _setValue(kNotesCollectionKey, json.encode(newNotes));
-  //   return changedNotesAmount;
-  // }
-
+  @override
+  Future<int> archiveAll({required bool isArchived}) async {
+    final Notes = [..._NoteStreamController.value];
+    final changedNotesAmount =
+        Notes.where((t) => t.isArchived != isArchived).length;
+    final newNotes = [
+      for (final Note in Notes) Note.copyWith(isArchived: isArchived)
+    ];
+    _NoteStreamController.add(newNotes);
+    await _setValue(kNotesCollectionKey, json.encode(newNotes));
+    return changedNotesAmount;
+  }
 }

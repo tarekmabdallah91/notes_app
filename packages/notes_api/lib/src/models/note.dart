@@ -22,6 +22,7 @@ class Note extends Equatable {
   final String body;
   final String noteTime;
   final String imageUrl;
+  final bool isArchived;
 
   Note({
     String? id,
@@ -29,6 +30,7 @@ class Note extends Equatable {
     required this.body,
     required this.noteTime,
     required this.imageUrl,
+    required this.isArchived,
   })  : assert(
           id == null || id.isNotEmpty,
           'id can not be null and should be empty',
@@ -41,11 +43,11 @@ class Note extends Equatable {
 
   @override
   String toString() {
-    return 'Note{id: $id\nname: $title\nage: $body\ntime: $noteTime\nimageUrl $imageUrl }';
+    return 'Note{id: $id\nname: $title\nage: $body\ntime: $noteTime\nimageUrl $imageUrl\nisArchived $isArchived}';
   }
 
   @override
-  List<Object?> get props => [id, title, body, noteTime, imageUrl];
+  List<Object?> get props => [id, title, body, noteTime, imageUrl, isArchived];
 
   /// Returns a copy of this NoteModel with the given values updated.
   Note copyWith({
@@ -54,6 +56,7 @@ class Note extends Equatable {
     String? body,
     String? noteTime,
     String? imageUrl,
+    bool? isArchived,
   }) {
     return Note(
       id: id ?? this.id,
@@ -61,6 +64,7 @@ class Note extends Equatable {
       body: body ?? this.body,
       noteTime: noteTime ?? this.noteTime,
       imageUrl: imageUrl ?? this.imageUrl,
+      isArchived: isArchived ?? this.isArchived,
     );
   }
 }
