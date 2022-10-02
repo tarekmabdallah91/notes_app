@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/pages/stats_page.dart';
 
-import '../../pages/edit_note_page.dart';
+import '../../edit_note/view/edit_note_page.dart';
 import '../../nots_over_view/view/notes_overview_page.dart';
+import '../../stats/view/stats_page.dart';
 import '../cubit/home_cubit.dart';
 
 class HomePage extends StatelessWidget {
@@ -33,7 +33,7 @@ class HomeView extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         key: const Key('homeView_addNote_floatingActionButton'),
-        onPressed: () => Navigator.of(context).pushNamed(EditNotePage.route),
+        onPressed: () => Navigator.of(context).push(EditNotePage.route()),
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomAppBar(

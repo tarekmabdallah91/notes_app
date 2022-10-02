@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/l10n/l10n.dart';
 import 'package:notes_repository/note_repository.dart';
 
-import '../../pages/edit_note_page.dart';
+
+import '../../edit_note/view/edit_note_page.dart';
 import '../bloc/notes_overview_bloc.dart';
 import '../widgets/note_list_tile.dart';
 import '../widgets/notes_overview_filter_button.dart';
@@ -121,8 +122,8 @@ class NotesOverviewView extends StatelessWidget {
                             .add(NotesOverviewNoteDeleted(note));
                       },
                       onTap: () {
-                        Navigator.of(context).pushNamed(
-                          EditNotePage.route,
+                        Navigator.of(context).push(
+                          EditNotePage.route(initialNote: note),
                         );
                       },
                     ),
