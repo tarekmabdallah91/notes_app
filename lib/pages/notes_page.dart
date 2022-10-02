@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/home/cubit/note_cubit.dart';
-import 'package:notes_app/home/cubit/note_states.dart';
+import 'package:notes_app/cubit/note_cubit.dart';
+import 'package:notes_app/cubit/note_states.dart';
 import 'package:notes_app/pages/add_note_page.dart';
 import 'package:notes_repository/note_repository.dart';
-import '../../utils/text_utils.dart';
-import '../../widgets/notes_list_item.dart';
+import '../utils/text_utils.dart';
+import '../widgets/notes_list_item.dart';
 
 class NotesPage extends StatelessWidget {
   static const route = '/NotesPage';

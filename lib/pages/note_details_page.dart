@@ -1,10 +1,10 @@
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/home/cubit/note_states.dart';
+import 'package:notes_app/cubit/note_states.dart';
 import 'package:notes_app/models/note_model.dart';
 
-import '../home/cubit/note_cubit.dart';
+import '../cubit/note_cubit.dart';
 import '../utils/text_utils.dart';
 
 class NoteDetailsPage extends StatelessWidget {

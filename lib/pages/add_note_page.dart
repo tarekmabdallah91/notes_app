@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:notes_app/home/cubit/note_cubit.dart';
+import 'package:notes_app/cubit/note_cubit.dart';
 import 'package:notes_app/models/note_category.dart';
 import 'package:notes_app/models/note_model.dart';
 import '../utils/text_utils.dart';

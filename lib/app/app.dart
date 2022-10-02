@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/home/view/notes_page.dart';
+import 'package:notes_app/home/home.dart';
 import 'package:notes_repository/note_repository.dart';
 import '../theme/theme.dart';
 
@@ -13,14 +13,13 @@ class NotesApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: NotesRepository,
-      child: AppView(notesRepository: notesRepository),
+      child: const AppView(),
     );
   }
 }
 
 class AppView extends StatelessWidget {
-  const AppView({super.key, required this.notesRepository});
-  final NotesRepository notesRepository;
+  const AppView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,7 @@ class AppView extends StatelessWidget {
       darkTheme: FlutterNotesTheme.dark,
       // localizationsDelegates: AppLocalizations.localizationsDelegates,
       // supportedLocales: AppLocalizations.supportedLocales,
-      home: NotesPage(notesRepository: notesRepository),
+      home: const HomePage(),
     );
   }
 }

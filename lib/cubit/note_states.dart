@@ -1,6 +1,6 @@
 import 'package:notes_api/notes_api.dart';
 
-import '../../models/note_model.dart';
+import '../models/note_model.dart';
 
 abstract class NoteState {}
 
