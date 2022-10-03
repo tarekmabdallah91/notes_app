@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:notes_api/notes_api.dart';
 
-
 class NoteListTile extends StatelessWidget {
   const NoteListTile({
     super.key,
     required this.note,
-    this.onToggleCompleted,
+    this.onToggleArchived,
     this.onDismissed,
     this.onTap,
   });
 
   final Note note;
-  final ValueChanged<bool>? onToggleCompleted;
+  final ValueChanged<bool>? onToggleArchived;
   final DismissDirectionCallback? onDismissed;
   final VoidCallback? onTap;
 
@@ -22,7 +21,7 @@ class NoteListTile extends StatelessWidget {
     final captionColor = theme.textTheme.caption?.color;
 
     return Dismissible(
-      key: Key('todoListTile_dismissible_${note.id}'),
+      key: Key('noteListTile_dismissible_${note.id}'),
       onDismissed: onDismissed,
       direction: DismissDirection.endToStart,
       background: Container(
@@ -57,9 +56,9 @@ class NoteListTile extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           value: note.isArchived,
-          onChanged: onToggleCompleted == null
+          onChanged: onToggleArchived == null
               ? null
-              : (value) => onToggleCompleted!(value!),
+              : (value) => onToggleArchived!(value!),
         ),
         trailing: onTap == null ? null : const Icon(Icons.chevron_right),
       ),

@@ -16,7 +16,7 @@ void bootstrap({required NotesApi notesApi}) {
 
   Bloc.observer = AppBlocObserver();
 
-  final notesRepository = NotesRepository(NotesApi: notesApi);
+  final notesRepository = NotesRepository(notesApi: notesApi);
 
   runZonedGuarded(
     () => runApp(NotesApp(notesRepository: notesRepository)),

@@ -36,11 +36,11 @@ class StatsView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ListTile(
-            key: const Key('statsView_completedNotes_listTile'),
-            leading: const Icon(Icons.check_rounded),
-            title: Text(l10n.statsActiveNoteCountLabel),
+            key: const Key('statsView_archivedNotes_listTile'),
+            leading: const Icon(Icons.archive),
+            title: Text(l10n.statsArchivedNoteCountLabel),
             trailing: Text(
-              '${state.completedNotes}',
+              '${state.archivedNotes}',
               style: textTheme.headline5,
             ),
           ),

@@ -11,8 +11,8 @@ class NotesOverviewSubscriptionRequested extends NotesOverviewEvent {
   const NotesOverviewSubscriptionRequested();
 }
 
-class NotesOverviewNoteCompletionToggled extends NotesOverviewEvent {
-  const NotesOverviewNoteCompletionToggled({
+class NotesOverviewNoteArchivedToggled extends NotesOverviewEvent {
+  const NotesOverviewNoteArchivedToggled({
     required this.note,
     required this.isArchived,
   });
@@ -50,6 +50,6 @@ class NotesOverviewToggleAllRequested extends NotesOverviewEvent {
   const NotesOverviewToggleAllRequested();
 }
 
-class NotesOverviewClearCompletedRequested extends NotesOverviewEvent {
-  const NotesOverviewClearCompletedRequested();
+class NotesOverviewClearArchivedRequested extends NotesOverviewEvent {
+  const NotesOverviewClearArchivedRequested();
 }

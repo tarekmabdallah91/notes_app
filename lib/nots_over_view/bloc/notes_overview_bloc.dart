@@ -13,12 +13,12 @@ class NotesOverviewBloc extends Bloc<NotesOverviewEvent, NotesOverviewState> {
   })  : _notesRepository = notesRepository,
         super(const NotesOverviewState()) {
     on<NotesOverviewSubscriptionRequested>(_onSubscriptionRequested);
-    on<NotesOverviewNoteCompletionToggled>(_onNoteCompletionToggled);
+    on<NotesOverviewNoteArchivedToggled>(_onNoteArchivedToggled);
     on<NotesOverviewNoteDeleted>(_onNoteDeleted);
     on<NotesOverviewUndoDeletionRequested>(_onUndoDeletionRequested);
     on<NotesOverviewFilterChanged>(_onFilterChanged);
     on<NotesOverviewToggleAllRequested>(_onToggleAllRequested);
-    on<NotesOverviewClearCompletedRequested>(_onClearArchivedRequested);
+    on<NotesOverviewClearArchivedRequested>(_onClearArchivedRequested);
   }
 
   final NotesRepository _notesRepository;
@@ -41,8 +41,8 @@ class NotesOverviewBloc extends Bloc<NotesOverviewEvent, NotesOverviewState> {
     );
   }
 
-  Future<void> _onNoteCompletionToggled(
-    NotesOverviewNoteCompletionToggled event,
+  Future<void> _onNoteArchivedToggled(
+    NotesOverviewNoteArchivedToggled event,
     Emitter<NotesOverviewState> emit,
   ) async {
     final newNote = event.note.copyWith(isArchived: event.isArchived);
@@ -82,12 +82,12 @@ class NotesOverviewBloc extends Bloc<NotesOverviewEvent, NotesOverviewState> {
     NotesOverviewToggleAllRequested event,
     Emitter<NotesOverviewState> emit,
   ) async {
-    final areAllCompleted = state.notes.every((note) => note.isArchived);
-    await _notesRepository.archiveAll(isArchived: !areAllCompleted);
+    final areAllArchived = state.notes.every((note) => note.isArchived);
+    await _notesRepository.archiveAll(isArchived: !areAllArchived);
   }
 
   Future<void> _onClearArchivedRequested(
-    NotesOverviewClearCompletedRequested event,
+    NotesOverviewClearArchivedRequested event,
     Emitter<NotesOverviewState> emit,
   ) async {
     await _notesRepository.clearArchived();

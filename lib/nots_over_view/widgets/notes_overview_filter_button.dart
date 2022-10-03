@@ -5,7 +5,6 @@ import 'package:notes_app/l10n/l10n.dart';
 import '../bloc/notes_overview_bloc.dart';
 import '../models/notes_view_filter.dart';
 
-
 class NotesOverviewFilterButton extends StatelessWidget {
   const NotesOverviewFilterButton({super.key});
 
@@ -38,7 +37,7 @@ class NotesOverviewFilterButton extends StatelessWidget {
             child: Text(l10n.notesOverviewFilterActiveOnly),
           ),
           PopupMenuItem(
-            value: NotesViewFilter.completedOnly,
+            value: NotesViewFilter.archiveddOnly,
             child: Text(l10n.notesOverviewFilterActiveOnly),
           ),
         ];

@@ -1,8 +1,6 @@
-
-
 import 'package:notes_api/notes_api.dart';
 
-enum NotesViewFilter { all, activeOnly, completedOnly }
+enum NotesViewFilter { all, activeOnly, archiveddOnly }
 
 extension NotesViewFilterX on NotesViewFilter {
   bool apply(Note note) {
@@ -11,7 +9,7 @@ extension NotesViewFilterX on NotesViewFilter {
         return true;
       case NotesViewFilter.activeOnly:
         return !note.isArchived;
-      case NotesViewFilter.completedOnly:
+      case NotesViewFilter.archiveddOnly:
         return note.isArchived;
     }
   }

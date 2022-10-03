@@ -19,10 +19,9 @@ class LocalStorageNotesApi extends NotesApi {
 
   final SharedPreferences _plugin;
 
-  final _NoteStreamController = BehaviorSubject<List<Note>>.seeded(const []);
+  final _noteStreamController = BehaviorSubject<List<Note>>.seeded(const []);
 
   /// The key used for storing the Notes locally.
-  ///
   /// This is only exposed for testing and shouldn't be used by consumers of
   /// this library.
   @visibleForTesting
@@ -33,68 +32,67 @@ class LocalStorageNotesApi extends NotesApi {
       _plugin.setString(key, value);
 
   void _init() {
-    final NotesJson = _getValue(kNotesCollectionKey);
-    if (NotesJson != null) {
-      final Notes = List<Map<dynamic, dynamic>>.from(
-        json.decode(NotesJson) as List,
+    final notesJson = _getValue(kNotesCollectionKey);
+    if (notesJson != null) {
+      final notes = List<Map<dynamic, dynamic>>.from(
+        json.decode(notesJson) as List,
       )
           .map((jsonMap) => Note.fromJson(Map<String, dynamic>.from(jsonMap)))
           .toList();
-      _NoteStreamController.add(Notes);
+      _noteStreamController.add(notes);
     } else {
-      _NoteStreamController.add(const []);
+      _noteStreamController.add(const []);
     }
   }
 
   @override
-  Stream<List<Note>> getNotes() => _NoteStreamController.asBroadcastStream();
+  Stream<List<Note>> getNotes() => _noteStreamController.asBroadcastStream();
 
   @override
-  Future<void> saveNote(Note Note) {
-    final Notes = [..._NoteStreamController.value];
-    final NoteIndex = Notes.indexWhere((t) => t.id == Note.id);
-    if (NoteIndex >= 0) {
-      Notes[NoteIndex] = Note;
+  Future<void> saveNote(Note note) {
+    final notes = [..._noteStreamController.value];
+    final noteIndex = notes.indexWhere((element) => element.id == note.id);
+    if (noteIndex >= 0) {
+      notes[noteIndex] = note;
     } else {
-      Notes.add(Note);
+      notes.add(note);
     }
-
-    _NoteStreamController.add(Notes);
-    return _setValue(kNotesCollectionKey, json.encode(Notes));
+    _noteStreamController.add(notes);
+    return _setValue(kNotesCollectionKey, json.encode(notes));
   }
 
   @override
   Future<void> deleteNote(String id) async {
-    final Notes = [..._NoteStreamController.value];
-    final NoteIndex = Notes.indexWhere((t) => t.id == id);
-    if (NoteIndex == -1) {
+    final notes = [..._noteStreamController.value];
+    final noteIndex = notes.indexWhere((element) => element.id == id);
+    if (noteIndex == -1) {
       throw NoteNotFoundException();
     } else {
-      Notes.removeAt(NoteIndex);
-      _NoteStreamController.add(Notes);
-      return _setValue(kNotesCollectionKey, json.encode(Notes));
+      notes.removeAt(noteIndex);
+      _noteStreamController.add(notes);
+      return _setValue(kNotesCollectionKey, json.encode(notes));
     }
   }
 
   @override
   Future<int> clearArchived() async {
-    final Notes = [..._NoteStreamController.value];
-    final completedNotesAmount = Notes.where((t) => t.isArchived).length;
-    Notes.removeWhere((t) => t.isArchived);
-    _NoteStreamController.add(Notes);
-    await _setValue(kNotesCollectionKey, json.encode(Notes));
+    final notes = [..._noteStreamController.value];
+    final completedNotesAmount = notes.where((element) => element.isArchived).length;
+    notes.removeWhere((element) => element.isArchived);
+    _noteStreamController.add(notes);
+    await _setValue(kNotesCollectionKey, json.encode(notes));
     return completedNotesAmount;
   }
 
   @override
   Future<int> archiveAll({required bool isArchived}) async {
-    final Notes = [..._NoteStreamController.value];
+    final notes = [..._noteStreamController.value];
     final changedNotesAmount =
-        Notes.where((t) => t.isArchived != isArchived).length;
+        notes.where((element) => element.isArchived != isArchived).length;
     final newNotes = [
-      for (final Note in Notes) Note.copyWith(isArchived: isArchived)
+      for (final note in notes) note.copyWith(isArchived: isArchived)
     ];
-    _NoteStreamController.add(newNotes);
+    _noteStreamController.add(newNotes);
     await _setValue(kNotesCollectionKey, json.encode(newNotes));
     return changedNotesAmount;
   }

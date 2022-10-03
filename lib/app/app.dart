@@ -25,6 +25,7 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: FlutterNotesTheme.light,
       darkTheme: FlutterNotesTheme.dark,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

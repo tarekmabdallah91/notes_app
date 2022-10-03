@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/l10n/l10n.dart';
 import 'package:notes_repository/note_repository.dart';
 
-
 import '../../edit_note/view/edit_note_page.dart';
 import '../bloc/notes_overview_bloc.dart';
 import '../widgets/note_list_tile.dart';
@@ -16,7 +15,7 @@ class NotesOverviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NotesOverviewBloc>(
+    return BlocProvider(
       create: (context) => NotesOverviewBloc(
         notesRepository: context.read<NotesRepository>(),
       )..add(const NotesOverviewSubscriptionRequested()),
@@ -108,9 +107,9 @@ class NotesOverviewView extends StatelessWidget {
                   for (final note in state.filteredNotes)
                     NoteListTile(
                       note: note,
-                      onToggleCompleted: (isArchived) {
+                      onToggleArchived: (isArchived) {
                         context.read<NotesOverviewBloc>().add(
-                              NotesOverviewNoteCompletionToggled(
+                              NotesOverviewNoteArchivedToggled(
                                 note: note,
                                 isArchived: isArchived,
                               ),

@@ -4,7 +4,6 @@ import 'package:notes_app/l10n/l10n.dart';
 
 import '../bloc/notes_overview_bloc.dart';
 
-
 @visibleForTesting
 enum NotesOverviewOption { toggleAll, clearCompleted }
 
@@ -34,7 +33,7 @@ class NotesOverviewOptionsButton extends StatelessWidget {
           case NotesOverviewOption.clearCompleted:
             context
                 .read<NotesOverviewBloc>()
-                .add(const NotesOverviewClearCompletedRequested());
+                .add(const NotesOverviewClearArchivedRequested());
         }
       },
       itemBuilder: (context) {

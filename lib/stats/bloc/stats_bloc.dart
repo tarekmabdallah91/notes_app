@@ -25,7 +25,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
       _notesRepository.getNotes(),
       onData: (notes) => state.copyWith(
         status: StatsStatus.success,
-        completedNotes: notes.where((note) => note.isArchived).length,
+        archivedNotes: notes.where((note) => note.isArchived).length,
         activeNotes: notes.where((note) => !note.isArchived).length,
       ),
       onError: (_, __) => state.copyWith(status: StatsStatus.failure),

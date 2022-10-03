@@ -6,33 +6,29 @@ import 'package:notes_api/notes_api.dart';
 class NotesRepository {
   /// {@macro Notes_repository}
   const NotesRepository({
-    required NotesApi NotesApi,
-  }) : _NotesApi = NotesApi;
+    required NotesApi notesApi,
+  }) : _notesApi = notesApi;
 
-  final NotesApi _NotesApi;
+  final NotesApi _notesApi;
 
   /// Provides a [Stream] of all Notes.
-  Stream<List<Note>> getNotes() => _NotesApi.getNotes();
+  Stream<List<Note>> getNotes() => _notesApi.getNotes();
 
-  /// Saves a [Note].
-  ///
-  /// If a [Note] with the same id already exists, it will be replaced.
-  Future<void> saveNote(Note Note) => _NotesApi.saveNote(Note);
+  /// Saves a [note].
+  /// If a [note] with the same id already exists, it will be replaced.
+  Future<void> saveNote(Note note) => _notesApi.saveNote(note);
 
   /// Deletes the Note with the given id.
-  ///
   /// If no Note with the given id exists, a [NoteNotFoundException] error is
   /// thrown.
-  Future<void> deleteNote(String id) => _NotesApi.deleteNote(id);
+  Future<void> deleteNote(String id) => _notesApi.deleteNote(id);
 
   /// Deletes all completed Notes.
-  ///
   /// Returns the number of deleted Notes.
-  Future<int> clearArchived() => _NotesApi.clearArchived();
+  Future<int> clearArchived() => _notesApi.clearArchived();
 
-  // /// Sets the `isCompleted` state of all Notes to the given value.
-  // ///
-  // /// Returns the number of updated Notes.
+  /// Sets the `isCompleted` state of all Notes to the given value.
+  /// Returns the number of updated Notes.
   Future<int> archiveAll({required bool isArchived}) =>
-      _NotesApi.archiveAll(isArchived: isArchived);
+      _notesApi.archiveAll(isArchived: isArchived);
 }
