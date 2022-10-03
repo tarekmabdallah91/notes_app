@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../edit_note/view/edit_note_page.dart';
-import '../../nots_over_view/view/notes_overview_page.dart';
+import '../../notes_overview/view/notes_overview_page.dart';
 import '../../stats/view/stats_page.dart';
 import '../cubit/home_cubit.dart';
 

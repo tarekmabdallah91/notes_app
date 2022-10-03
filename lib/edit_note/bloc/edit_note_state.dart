@@ -14,13 +14,15 @@ class EditNoteState extends Equatable {
     this.status = EditNoteStatus.initial,
     this.initialNote,
     this.title = '',
-    this.description = '',
+    this.body = '',
+    this.imageUrl ='',
   });
 
   final EditNoteStatus status;
   final Note? initialNote;
   final String title;
-  final String description;
+  final String body;
+  final String imageUrl;
 
   bool get isNewNote => initialNote == null;
 
@@ -28,16 +30,18 @@ class EditNoteState extends Equatable {
     EditNoteStatus? status,
     Note? initialNote,
     String? title,
-    String? description,
+    String? body,
+    String? imageUrl,
   }) {
     return EditNoteState(
       status: status ?? this.status,
       initialNote: initialNote ?? this.initialNote,
       title: title ?? this.title,
-      description: description ?? this.description,
+      body: body ?? this.body,
+      imageUrl: imageUrl ?? this.imageUrl,
     );
   }
 
   @override
-  List<Object?> get props => [status, initialNote, title, description];
+  List<Object?> get props => [status, initialNote, title, body, imageUrl];
 }

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/cubit/note_cubit.dart';
-import 'package:notes_app/cubit/note_states.dart';
 import 'package:notes_app/pages/add_note_page.dart';
 import 'package:notes_repository/note_repository.dart';
 import '../utils/text_utils.dart';
@@ -14,10 +12,12 @@ class NotesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => NoteCubit(notesRepository)..getAllNotes(),
-      child: const NotesView(),
-    );
+    //   return BlocProvider(
+    //     create: (context) => NoteCubit(notesRepository)..getAllNotes(),
+    //     child: const NotesView(),
+    //   );
+    // }
+    throw UnimplementedError();
   }
 }
 
@@ -55,29 +55,30 @@ class NotesListStatesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NoteCubit, NoteState>(builder: (context, state) {
-      TextUtils.printLog(tag, state);
-      if (state is InitNoteState) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      } else if (state is GetAllNotesState
-          // || state is AddNoteState ||
-          //     state is UpdateNoteState ||
-          //     state is DeleteNoteState
-          ) {
-        return state.notes.isEmpty
-            ? const Center(child: Text('please add notes !'))
-            : ListView.builder(
-                itemBuilder: (context, index) => NoteListItem(
-                      note: state.notes[index],
-                    ),
-                itemCount: state.notes.length);
-      } else {
-        return const Center(
-          child: Text('Error no data available !'),
-        );
-      }
-    });
+    // return BlocBuilder<NoteCubit, NoteState>(builder: (context, state) {
+    //   TextUtils.printLog(tag, state);
+    //   if (state is InitNoteState) {
+    //     return const Center(
+    //       child: CircularProgressIndicator(),
+    //     );
+    //   } else if (state is GetAllNotesState
+    //       // || state is AddNoteState ||
+    //       //     state is UpdateNoteState ||
+    //       //     state is DeleteNoteState
+    //       ) {
+    //     return state.notes.isEmpty
+    //         ? const Center(child: Text('please add notes !'))
+    //         : ListView.builder(
+    //             itemBuilder: (context, index) => NoteListItem(
+    //                   note: state.notes[index],
+    //                 ),
+    //             itemCount: state.notes.length);
+    //   } else {
+    //     return const Center(
+    //       child: Text('Error no data available !'),
+    //     );
+    //   }
+    // });
+    throw UnimplementedError();
   }
 }

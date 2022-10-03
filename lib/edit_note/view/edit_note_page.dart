@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_api/notes_api.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:notes_app/l10n/l10n.dart';
 import 'package:notes_repository/note_repository.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as syspaths;
 
+import '../../utils/text_utils.dart';
 import '../bloc/edit_note_bloc.dart';
-
 
 class EditNotePage extends StatelessWidget {
   const EditNotePage({super.key});
@@ -80,7 +84,12 @@ class EditNoteView extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
-              children: const [_TitleField(), _DescriptionField()],
+              children: [
+                const _TitleField(),
+                const _DescriptionField(),
+                const SizedBox(height: 10),
+                ImageInput(),
+              ],
             ),
           ),
         ),
@@ -130,7 +139,7 @@ class _DescriptionField extends StatelessWidget {
 
     return TextFormField(
       key: const Key('editNoteView_description_textFormField'),
-      initialValue: state.description,
+      initialValue: state.body,
       decoration: InputDecoration(
         enabled: !state.status.isLoadingOrSuccess,
         labelText: l10n.editNoteDescriptionLabel,
@@ -144,6 +153,86 @@ class _DescriptionField extends StatelessWidget {
       onChanged: (value) {
         context.read<EditNoteBloc>().add(EditNoteDescriptionChanged(value));
       },
+    );
+  }
+}
+
+class ImageInput extends StatelessWidget {
+  final tag = 'ImageInput';
+  String savedImagePath = '';
+
+  ImageInput({super.key});
+
+  void _saveImage(BuildContext context, String savedImagePath) {
+    TextUtils.printLog(tag, '_selectImage');
+    context.read<EditNoteBloc>().add(EditNoteImageChanged(savedImagePath));
+  }
+
+  Future<void> _takePicture(Function(String savedImagePath) saveImage) async {
+    final imageFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxWidth: 600,
+    );
+
+    final appDir = await syspaths.getApplicationDocumentsDirectory();
+    final fileName = path.basename(imageFile!.path);
+    final savedImage =
+        await File(imageFile.path).copy('${appDir.path}/$fileName');
+    savedImagePath = savedImage.path;
+    TextUtils.printLog(tag, savedImagePath);
+    TextUtils.printLog(tag, '${appDir.path}/$fileName');
+
+    saveImage(savedImagePath);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<EditNoteBloc>().state;
+    savedImagePath = savedImagePath.isEmpty
+        ? state.initialNote?.imageUrl ?? ''
+        : savedImagePath;
+    TextUtils.printLog(tag, savedImagePath);
+    return Row(
+      children: <Widget>[
+        Container(
+          width: 150,
+          height: 100,
+          decoration: BoxDecoration(
+            border: Border.all(width: 1, color: Colors.grey),
+          ),
+          alignment: Alignment.center,
+          child: savedImagePath.isEmpty
+              ? const Text(
+                  'No Image Taken',
+                  textAlign: TextAlign.center,
+                )
+              : Image.file(
+                  File(savedImagePath),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+        ),
+        // ),
+        const SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: ElevatedButton.icon(
+            icon: const Icon(Icons.camera),
+            label: const Text('Take Picture'),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).primaryColor,
+              textStyle: const TextStyle(fontSize: 15),
+              elevation: 0,
+            ),
+            onPressed: () {
+              _takePicture(
+                  (savedImagePath) => _saveImage(context, savedImagePath));
+            },
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,11 +1,9 @@
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes_app/cubit/note_states.dart';
-import 'package:notes_app/models/note_model.dart';
 
-import '../cubit/note_cubit.dart';
-import '../utils/text_utils.dart';
+import '../models/note_model.dart';
+
 
 class NoteDetailsPage extends StatelessWidget {
   static const route = '/NoteDetailsPage';
@@ -22,7 +20,7 @@ class NoteDetailsPage extends StatelessWidget {
 
   void getNoteById(BuildContext context) {
     final noteId = ModalRoute.of(context)!.settings.arguments as String;
-    NoteCubit noteCubit = BlocProvider.of<NoteCubit>(context);
+    // NoteCubit noteCubit = BlocProvider.of<NoteCubit>(context);
     // note = noteCubit.getNoteById(noteId);
   }
 

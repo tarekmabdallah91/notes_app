@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:notes_app/cubit/note_cubit.dart';
 import 'package:notes_app/models/note_category.dart';
 import 'package:notes_app/models/note_model.dart';
 import '../utils/text_utils.dart';
@@ -41,7 +40,7 @@ class _AddNotePageState extends State<AddNotePage> {
   void didChangeDependencies() {
     try {
       final noteId = ModalRoute.of(context)!.settings.arguments as String;
-      NoteCubit noteCubit = BlocProvider.of<NoteCubit>(context);
+      // NoteCubit noteCubit = BlocProvider.of<NoteCubit>(context);
       // editableNote = noteCubit.getNoteById(noteId);
     } catch (error) {
       TextUtils.printLog(widget.tag, error);

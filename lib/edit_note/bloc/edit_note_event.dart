@@ -25,6 +25,15 @@ class EditNoteDescriptionChanged extends EditNoteEvent {
   List<Object> get props => [description];
 }
 
+class EditNoteImageChanged extends EditNoteEvent {
+  const EditNoteImageChanged(this.imageUrl);
+
+  final String imageUrl;
+
+  @override
+  List<Object> get props => [imageUrl];
+}
+
 class EditNoteSubmitted extends EditNoteEvent {
   const EditNoteSubmitted();
 }

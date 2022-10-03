@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:notes_api/notes_api.dart';
 import 'package:notes_repository/note_repository.dart';
 
-
 part 'edit_note_event.dart';
 part 'edit_note_state.dart';
 
@@ -16,11 +15,13 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
           EditNoteState(
             initialNote: initialNote,
             title: initialNote?.title ?? '',
-            description: initialNote?.body ?? '',
+            body: initialNote?.body ?? '',
+            imageUrl: initialNote?.imageUrl ?? '',
           ),
         ) {
     on<EditNoteTitleChanged>(_onTitleChanged);
     on<EditNoteDescriptionChanged>(_onDescriptionChanged);
+    on<EditNoteImageChanged>(_onImageChanged);
     on<EditNoteSubmitted>(_onSubmitted);
   }
 
@@ -37,7 +38,14 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
     EditNoteDescriptionChanged event,
     Emitter<EditNoteState> emit,
   ) {
-    emit(state.copyWith(description: event.description));
+    emit(state.copyWith(body: event.description));
+  }
+
+  void _onImageChanged(
+    EditNoteImageChanged event,
+    Emitter<EditNoteState> emit,
+  ) {
+    emit(state.copyWith(imageUrl: event.imageUrl));
   }
 
   Future<void> _onSubmitted(
@@ -45,9 +53,19 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
     Emitter<EditNoteState> emit,
   ) async {
     emit(state.copyWith(status: EditNoteStatus.loading));
-    final note = (state.initialNote ?? Note(title: '', body: '', imageUrl: '', noteTime: '', isArchived: false,)).copyWith(
+    final note = (state.initialNote ??
+            Note(
+              title: '',
+              body: '',
+              imageUrl: '',
+              noteTime: '',
+              isArchived: false,
+            ))
+        .copyWith(
       title: state.title,
-      body: state.description,
+      body: state.body,
+      imageUrl: state.imageUrl,
+      noteTime: DateTime.now().toString(),
     );
 
     try {
