@@ -6,6 +6,10 @@ import 'package:notes_api/notes_api.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'notes_db.dart';
+
+part 'notes_shared_preferences.dart';
+
 /// {@template local_storage_Notes_api}
 /// A Flutter implementation of the [NotesApi] that uses local storage.
 /// {@endtemplate}
@@ -13,36 +17,18 @@ class LocalStorageNotesApi extends NotesApi {
   /// {@macro local_storage_Notes_api}
   LocalStorageNotesApi({
     required SharedPreferences plugin,
-  }) : _plugin = plugin {
+  }) : _plugin = NotesSharedPreferences(plugin) {
     _init();
   }
 
-  final SharedPreferences _plugin;
+  final NotesSharedPreferences _plugin;
+  final NotesDb _notesDb = NotesDb();
 
   final _noteStreamController = BehaviorSubject<List<Note>>.seeded(const []);
 
-  /// The key used for storing the Notes locally.
-  /// This is only exposed for testing and shouldn't be used by consumers of
-  /// this library.
-  @visibleForTesting
-  static const kNotesCollectionKey = '__Notes_collection_key__';
-
-  String? _getValue(String key) => _plugin.getString(key);
-  Future<void> _setValue(String key, String value) =>
-      _plugin.setString(key, value);
-
-  void _init() {
-    final notesJson = _getValue(kNotesCollectionKey);
-    if (notesJson != null) {
-      final notes = List<Map<dynamic, dynamic>>.from(
-        json.decode(notesJson) as List,
-      )
-          .map((jsonMap) => Note.fromJson(Map<String, dynamic>.from(jsonMap)))
-          .toList();
-      _noteStreamController.add(notes);
-    } else {
-      _noteStreamController.add(const []);
-    }
+  void _init() async {
+    // _plugin._init(_noteStreamController);
+    _noteStreamController.add(await _notesDb.getAllNotes());
   }
 
   @override
@@ -50,42 +36,66 @@ class LocalStorageNotesApi extends NotesApi {
 
   @override
   Future<void> saveNote(Note note) {
+    _saveNoteStreamController(note);
+    return _notesDb.addNote(note);
+    // return _plugin.saveNote(_noteStreamController, note);
+  }
+
+  void _saveNoteStreamController(Note note) {
+    _updateStreamController((notes) {
+      final noteIndex = notes.indexWhere((element) => element.id == note.id);
+      if (noteIndex >= 0) {
+        notes[noteIndex] = note;
+      } else {
+        notes.add(note);
+      }
+    });
+  }
+
+  void _updateStreamController(
+      Function(List<Note> notes) updateStramController) {
     final notes = [..._noteStreamController.value];
-    final noteIndex = notes.indexWhere((element) => element.id == note.id);
-    if (noteIndex >= 0) {
-      notes[noteIndex] = note;
-    } else {
-      notes.add(note);
-    }
+    updateStramController(notes);
     _noteStreamController.add(notes);
-    return _setValue(kNotesCollectionKey, json.encode(notes));
   }
 
   @override
   Future<void> deleteNote(String id) async {
-    final notes = [..._noteStreamController.value];
-    final noteIndex = notes.indexWhere((element) => element.id == id);
+    _deleteNoteStreamController(id);
+    return _notesDb.deleteNote(id);
+    // return _plugin.deleteNote(_noteStreamController, id);
+  }
+
+  void _deleteNoteStreamController(String id) {
+    _updateStreamController((notes) {final noteIndex = notes.indexWhere((element) => element.id == id);
     if (noteIndex == -1) {
       throw NoteNotFoundException();
     } else {
       notes.removeAt(noteIndex);
-      _noteStreamController.add(notes);
-      return _setValue(kNotesCollectionKey, json.encode(notes));
-    }
+    }});
   }
 
   @override
   Future<int> clearArchived() async {
-    final notes = [..._noteStreamController.value];
-    final completedNotesAmount = notes.where((element) => element.isArchived).length;
-    notes.removeWhere((element) => element.isArchived);
-    _noteStreamController.add(notes);
-    await _setValue(kNotesCollectionKey, json.encode(notes));
-    return completedNotesAmount;
+    _clearArchivedStreamController();
+    return _notesDb.clearArchived();
+    // return await _plugin.clearArchived(_noteStreamController);
+  }
+
+  void _clearArchivedStreamController() {
+    _updateStreamController((notes){
+    notes.removeWhere((element) => element.isArchived);});
   }
 
   @override
   Future<int> archiveAll({required bool isArchived}) async {
+    archiveAllStreamController(isArchived: isArchived);
+    return _notesDb.archiveAll(isArchived: isArchived);
+    // return await _plugin.archiveAll(_noteStreamController,
+    //     isArchived: isArchived);
+  }
+
+  void archiveAllStreamController({required bool isArchived}) {
     final notes = [..._noteStreamController.value];
     final changedNotesAmount =
         notes.where((element) => element.isArchived != isArchived).length;
@@ -93,7 +103,5 @@ class LocalStorageNotesApi extends NotesApi {
       for (final note in notes) note.copyWith(isArchived: isArchived)
     ];
     _noteStreamController.add(newNotes);
-    await _setValue(kNotesCollectionKey, json.encode(newNotes));
-    return changedNotesAmount;
   }
 }

@@ -11,8 +11,8 @@ Note _$NoteModelFromJson(Map<String, dynamic> json) => Note(
       title: json['title'] as String,
       body: json['body'] as String,
       noteTime: json['noteTime'] as String,
-      imageUrl: json['imageUrl'] as String, 
-      isArchived: json['isArchived'] as bool,
+      imageUrl: json['imageUrl'] as String,
+      isArchived: json['isArchived'] as int == 0 ? false : true,
     );
 
 Map<String, dynamic> _$NoteModelToJson(Note instance) => <String, dynamic>{
@@ -21,5 +21,5 @@ Map<String, dynamic> _$NoteModelToJson(Note instance) => <String, dynamic>{
       'body': instance.body,
       'noteTime': instance.noteTime,
       'imageUrl': instance.imageUrl,
-      'isArchived': instance.isArchived,
+      'isArchived': instance.isArchived ? 1 : 0,
     };
