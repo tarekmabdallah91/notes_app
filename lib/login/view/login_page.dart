@@ -15,8 +15,22 @@ class LoginPage extends StatelessWidget {
       create: (_) => LoginBloc(
         sessionRespository: context.read<SessionRepository>(),
       )..add(const LoginSubscriptionRequested()),
-      child: const LoginView(),
+      child: const CheckSessionStatus(),
     );
+  }
+}
+
+class CheckSessionStatus extends StatelessWidget {
+  const CheckSessionStatus({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var currentStatus = BlocProvider.of<LoginBloc>(context).state.status;
+    if (currentStatus == LoginStatus.newUser) {
+      return const LoginView();
+    } else {
+      return const HomePage();
+    }
   }
 }
 

@@ -24,6 +24,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) async {
     emit(state.copyWith(status: LoginStatus.loading));
+    if (_repository.getUser().token.isNotEmpty) {
+      emit(state.copyWith(status: LoginStatus.loggedin));
+    } else {
+      emit(state.copyWith(status: LoginStatus.newUser));
+    }
   }
 
   void _onUserNameChanged(
@@ -78,4 +83,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   User user = User(id: 'name', token: 'token');
+
+//BlocProvider.of<LoginBloc>(context).loggout();
+  void loggout() {
+    user = user.copyWith(token: '');
+    _repository.saveUser(user);
+    TextUtils.printLog('loggout', 'user loggout');
+  }
 }
