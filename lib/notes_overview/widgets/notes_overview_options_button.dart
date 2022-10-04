@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:notes_api/notes_api.dart';
 import 'package:notes_app/l10n/l10n.dart';
 import 'package:notes_app/login/bloc/login_bloc.dart';
 import 'package:notes_app/login/login.dart';
@@ -39,10 +41,8 @@ class NotesOverviewOptionsButton extends StatelessWidget {
             break;
           case NotesOverviewOption.logout:
             context.read<LoginBloc>().add(LoginOutSubmitted(
-              () => 
-                Navigator.of(context).push(LoginPage.route())
-              ,
-            ));
+                  () => GoRouter.of(context).go(LoginPage.route),
+                ));
 
             break;
         }

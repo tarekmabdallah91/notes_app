@@ -9,7 +9,7 @@ part 'edit_note_state.dart';
 class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
   EditNoteBloc({
     required NotesRepository notesRepository,
-    required Note? initialNote,
+    Note? initialNote,
   })  : _notesRepository = notesRepository,
         super(
           EditNoteState(
@@ -53,26 +53,17 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
     Emitter<EditNoteState> emit,
   ) async {
     emit(state.copyWith(status: EditNoteStatus.loading));
-    final note = (state.initialNote ??
-            Note(
-              title: '',
-              body: '',
-              imageUrl: '',
-              noteTime: '',
-              isArchived: false,
-            ))
-        .copyWith(
+    final note = (state.initialNote ?? Note.initialNote()).copyWith(
       title: state.title,
       body: state.body,
       imageUrl: state.imageUrl,
       noteTime: DateTime.now().toString(),
     );
-
-    try {
-      await _notesRepository.saveNote(note);
-      emit(state.copyWith(status: EditNoteStatus.success));
-    } catch (e) {
-      emit(state.copyWith(status: EditNoteStatus.failure));
-    }
+    // try {
+    await _notesRepository.saveNote(note);
+    emit(state.copyWith(status: EditNoteStatus.success));
+    // } catch (e) {
+    //   emit(state.copyWith(status: EditNoteStatus.failure));
+    // }
   }
 }

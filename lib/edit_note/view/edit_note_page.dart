@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:notes_app/l10n/l10n.dart';
 import 'package:notes_repository/note_repository.dart';
@@ -16,18 +17,7 @@ import '../bloc/edit_note_bloc.dart';
 class EditNotePage extends StatelessWidget {
   const EditNotePage({super.key});
 
-  static Route<void> route({Note? initialNote}) {
-    return MaterialPageRoute(
-      fullscreenDialog: true,
-      builder: (context) => BlocProvider(
-        create: (context) => EditNoteBloc(
-          notesRepository: context.read<NotesRepository>(),
-          initialNote: initialNote,
-        ),
-        child: const EditNotePage(),
-      ),
-    );
-  }
+  static const route = '/EditNotePage';
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +25,7 @@ class EditNotePage extends StatelessWidget {
       listenWhen: (previous, current) =>
           previous.status != current.status &&
           current.status == EditNoteStatus.success,
-      listener: (context, state) => Navigator.of(context).pop(),
+      listener: (context, state) => GoRouter.of(context).pop(),
       child: const EditNoteView(),
     );
   }
@@ -74,7 +64,11 @@ class EditNoteView extends StatelessWidget {
             : fabBackgroundColor,
         onPressed: status.isLoadingOrSuccess
             ? null
-            : () => context.read<EditNoteBloc>().add(const EditNoteSubmitted()),
+            : () {
+                context.read<EditNoteBloc>().add(const EditNoteSubmitted());
+                // GoRouter.of(context).pop();
+                TextUtils.printLog('build', ' add note pressed');
+              },
         child: status.isLoadingOrSuccess
             ? const CupertinoActivityIndicator()
             : const Icon(Icons.check_rounded),

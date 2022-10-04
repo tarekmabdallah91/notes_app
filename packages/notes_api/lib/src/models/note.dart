@@ -67,4 +67,7 @@ class Note extends Equatable {
       isArchived: isArchived ?? this.isArchived,
     );
   }
+
+  factory  Note.initialNote ()=>
+      Note(title: '', body: '', noteTime: '', imageUrl: '', isArchived: false);
 }

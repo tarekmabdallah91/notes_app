@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:notes_app/l10n/l10n.dart';
 import 'package:notes_app/login/bloc/login_bloc.dart';
 import 'package:notes_repository/note_repository.dart';
@@ -130,9 +131,8 @@ class NotesOverviewView extends StatelessWidget {
                             .add(NotesOverviewNoteDeleted(note));
                       },
                       onTap: () {
-                        Navigator.of(context).push(
-                          EditNotePage.route(initialNote: note),
-                        );
+                        GoRouter.of(context)
+                            .pushNamed(EditNotePage.route, extra: note);
                       },
                     ),
                 ],

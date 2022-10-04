@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:notes_app/home/home.dart';
 import 'package:notes_app/login/bloc/login_bloc.dart';
 import 'package:notes_app/utils/text_utils.dart';
@@ -9,16 +10,7 @@ import 'package:notes_repository/note_repository.dart';
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
-  static Route<void> route() {
-    return MaterialPageRoute(
-      builder: (context) => BlocProvider(
-        create: (context) => LoginBloc(
-        sessionRespository: context.read<SessionRepository>(),
-      )..add(const LoginSubscriptionRequested()),
-        child: const CheckSessionStatus(),
-      ),
-    );
-  }
+  static const route = '/';
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +30,10 @@ class CheckSessionStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     var currentStatus = BlocProvider.of<LoginBloc>(context).state.status;
     TextUtils.printLog('CheckSessionStatus', '$currentStatus');
-    if (currentStatus == LoginStatus.loggedin) {
-      return const HomePage();
-    } else {
+    if (currentStatus == LoginStatus.logout) {
       return const LoginView();
+    } else {
+      return const HomePage();
     }
   }
 }
@@ -69,8 +61,8 @@ class LoginView extends StatelessWidget {
                     onPressed: () => context.read<LoginBloc>().add(
                           LoginSubmitted(() {
                             TextUtils.printLog("login btn ", 'pressed');
-                            Navigator.of(context).push(
-                              HomePage.route(),
+                            GoRouter.of(context).go(
+                              HomePage.route,
                             );
                           }),
                         ),

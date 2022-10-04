@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../edit_note/view/edit_note_page.dart';
 import '../../notes_overview/view/notes_overview_page.dart';
@@ -8,16 +9,7 @@ import '../cubit/home_cubit.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-  // static const route = '/HomePage';
-
-  static Route<void> route() {
-    return MaterialPageRoute(
-      builder: (context) => BlocProvider(
-        create: (context) => HomeCubit(),
-        child: const HomeView(),
-      ),
-    );
-  }
+  static const route = '/HomePage';
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +35,7 @@ class HomeView extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         key: const Key('homeView_addNote_floatingActionButton'),
-        onPressed: () => Navigator.of(context).push(EditNotePage.route()),
+        onPressed: () => GoRouter.of(context).pushNamed(EditNotePage.route),
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomAppBar(
