@@ -22,6 +22,11 @@ class LoginPasswordChanged extends LoginEvent {
 }
 
 class LoginSubmitted extends LoginEvent {
- LoginSubmitted(this.login);
+  LoginSubmitted(this.login);
   Function() login;
+}
+
+class LoginOutSubmitted extends LoginEvent {
+  LoginOutSubmitted(this.logout);
+  Function() logout;
 }

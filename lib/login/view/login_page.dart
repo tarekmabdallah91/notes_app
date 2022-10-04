@@ -9,6 +9,17 @@ import 'package:notes_repository/note_repository.dart';
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
+  static Route<void> route() {
+    return MaterialPageRoute(
+      builder: (context) => BlocProvider(
+        create: (context) => LoginBloc(
+        sessionRespository: context.read<SessionRepository>(),
+      )..add(const LoginSubscriptionRequested()),
+        child: const CheckSessionStatus(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -26,10 +37,11 @@ class CheckSessionStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var currentStatus = BlocProvider.of<LoginBloc>(context).state.status;
-    if (currentStatus == LoginStatus.newUser) {
-      return const LoginView();
-    } else {
+    TextUtils.printLog('CheckSessionStatus', '$currentStatus');
+    if (currentStatus == LoginStatus.loggedin) {
       return const HomePage();
+    } else {
+      return const LoginView();
     }
   }
 }

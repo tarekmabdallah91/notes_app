@@ -15,6 +15,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginUserNameChanged>(_onUserNameChanged);
     on<LoginPasswordChanged>(_onPasswordChanged);
     on<LoginSubmitted>(_onSubmitted);
+    on<LoginOutSubmitted>(_loggout);
   }
 
   final SessionRepository _repository;
@@ -27,7 +28,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (_repository.getUser().token.isNotEmpty) {
       emit(state.copyWith(status: LoginStatus.loggedin));
     } else {
-      emit(state.copyWith(status: LoginStatus.newUser));
+      emit(state.copyWith(status: LoginStatus.logout));
     }
   }
 
@@ -84,10 +85,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   User user = User(id: 'name', token: 'token');
 
-//BlocProvider.of<LoginBloc>(context).loggout();
-  void loggout() {
-    user = user.copyWith(token: '');
-    _repository.saveUser(user);
-    TextUtils.printLog('loggout', 'user loggout');
+  Future<void> _loggout(
+    LoginOutSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
+    try {
+      user = user.copyWith(token: '');
+      _repository.saveUser(user);
+      TextUtils.printLog('loggout', 'user loggout');
+      emit(state.copyWith(status: LoginStatus.logout));
+      event.logout();
+    } catch (e) {
+      emit(state.copyWith(status: LoginStatus.failure));
+    }
   }
 }

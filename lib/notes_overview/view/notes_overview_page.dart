@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/l10n/l10n.dart';
+import 'package:notes_app/login/bloc/login_bloc.dart';
 import 'package:notes_repository/note_repository.dart';
 
 import '../../edit_note/view/edit_note_page.dart';
@@ -15,10 +16,18 @@ class NotesOverviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => NotesOverviewBloc(
-        notesRepository: context.read<NotesRepository>(),
-      )..add(const NotesOverviewSubscriptionRequested()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => NotesOverviewBloc(
+              notesRepository: context.read<NotesRepository>())
+            ..add(const NotesOverviewSubscriptionRequested()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              LoginBloc(sessionRespository: context.read<SessionRepository>()),
+        ),
+      ],
       child: const NotesOverviewView(),
     );
   }
