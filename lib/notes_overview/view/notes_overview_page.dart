@@ -78,7 +78,8 @@ class NotesOverviewView extends StatelessWidget {
                 ..showSnackBar(
                   SnackBar(
                     content: Text(
-                      l10n.notesOverviewNoteDeletedSnackbarText,
+                      l10n.notesOverviewNoteDeletedSnackbarText(
+                          deletedNote.title),
                     ),
                     action: SnackBarAction(
                       label: l10n.notesOverviewUndoDeletionButtonText,

@@ -38,7 +38,7 @@ class NotesOverviewFilterButton extends StatelessWidget {
           ),
           PopupMenuItem(
             value: NotesViewFilter.archiveddOnly,
-            child: Text(l10n.notesOverviewFilterActiveOnly),
+            child: Text(l10n.notesOverviewFilterArchivedOnly),
           ),
         ];
       },

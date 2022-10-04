@@ -59,11 +59,11 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
       imageUrl: state.imageUrl,
       noteTime: DateTime.now().toString(),
     );
-    // try {
+    try {
     await _notesRepository.saveNote(note);
     emit(state.copyWith(status: EditNoteStatus.success));
-    // } catch (e) {
-    //   emit(state.copyWith(status: EditNoteStatus.failure));
-    // }
+    } catch (e) {
+      emit(state.copyWith(status: EditNoteStatus.failure));
+    }
   }
 }
