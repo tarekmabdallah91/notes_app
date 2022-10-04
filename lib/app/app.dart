@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/home/home.dart';
+import 'package:notes_app/login/view/login_page.dart';
 import 'package:notes_repository/note_repository.dart';
 import '../l10n/l10n.dart';
 import '../theme/theme.dart';
 
 class NotesApp extends StatelessWidget {
-  const NotesApp({super.key, required this.notesRepository});
+  const NotesApp({
+    super.key,
+    required this.notesRepository,
+    required this.sessionRepository,
+  });
 
   final NotesRepository notesRepository;
+  final SessionRepository sessionRepository;
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: notesRepository,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<NotesRepository>(
+            create: (context) => notesRepository),
+        RepositoryProvider<SessionRepository>(
+            create: (context) => sessionRepository),
+      ],
       child: const AppView(),
     );
   }
@@ -30,7 +41,7 @@ class AppView extends StatelessWidget {
       darkTheme: FlutterNotesTheme.dark,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const HomePage(),
+      home: const LoginPage(),
     );
   }
 }

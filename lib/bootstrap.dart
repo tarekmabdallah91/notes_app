@@ -9,7 +9,7 @@ import 'package:notes_repository/note_repository.dart';
 import 'app/app.dart';
 import 'app/app_bloc_observer.dart';
 
-void bootstrap({required NotesApi notesApi}) {
+void bootstrap({required NotesApi notesApi, required SessionApi sessionApi}) {
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
@@ -17,9 +17,13 @@ void bootstrap({required NotesApi notesApi}) {
   Bloc.observer = AppBlocObserver();
 
   final notesRepository = NotesRepository(notesApi: notesApi);
+  final sessionRepository = SessionRepository(sessionApi);
 
   runZonedGuarded(
-    () => runApp(NotesApp(notesRepository: notesRepository)),
+    () => runApp(NotesApp(
+      notesRepository: notesRepository,
+      sessionRepository: sessionRepository,
+    )),
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
 }

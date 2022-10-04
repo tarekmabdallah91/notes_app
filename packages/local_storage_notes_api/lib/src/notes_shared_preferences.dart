@@ -11,13 +11,13 @@ class NotesSharedPreferences {
   @visibleForTesting
   static const kNotesCollectionKey = '__Notes_collection_key__';
 
-  String? getValue() => _sharedPreferences.getString(kNotesCollectionKey);
-  Future<void> setValue(String value) =>
-      _sharedPreferences.setString(kNotesCollectionKey, value);
+  String? getValue(String key) => _sharedPreferences.getString(key);
+  Future<void> setValue(String key, String value) =>
+      _sharedPreferences.setString(key, value);
 
 
   void init(BehaviorSubject<List<Note>> _noteStreamController){
-    final notesJson = getValue();
+    final notesJson = getValue(kNotesCollectionKey);
     if (notesJson != null) {
       final notes = List<Map<dynamic, dynamic>>.from(
         json.decode(notesJson) as List,
@@ -39,7 +39,7 @@ class NotesSharedPreferences {
       notes.add(note);
     }
     _noteStreamController.add(notes);
-    return setValue(json.encode(notes));
+    return setValue(kNotesCollectionKey, json.encode(notes));
   }
 
   Future<void> deleteNote(BehaviorSubject<List<Note>> _noteStreamController, String id) async {
@@ -50,7 +50,7 @@ class NotesSharedPreferences {
     } else {
       notes.removeAt(noteIndex);
       _noteStreamController.add(notes);
-      return setValue(json.encode(notes));
+      return setValue(kNotesCollectionKey, json.encode(notes));
     }
   }
 
@@ -60,7 +60,7 @@ class NotesSharedPreferences {
         notes.where((element) => element.isArchived).length;
     notes.removeWhere((element) => element.isArchived);
     _noteStreamController.add(notes);
-    await setValue(json.encode(notes));
+    await setValue(kNotesCollectionKey, json.encode(notes));
     return archivedNotesAmount;
   }
 
@@ -72,7 +72,7 @@ class NotesSharedPreferences {
       for (final note in notes) note.copyWith(isArchived: isArchived)
     ];
     _noteStreamController.add(newNotes);
-    await setValue(json.encode(newNotes));
+    await setValue(kNotesCollectionKey, json.encode(newNotes));
     return changedNotesAmount;
   }
 }

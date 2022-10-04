@@ -5,3 +5,5 @@ export 'package:shared_preferences/shared_preferences.dart'
 
 export 'src/local_storage_notes_api.dart';
 export 'src/notes_db.dart';
+
+export 'src/local_storage_session.dart';

@@ -8,6 +8,16 @@ import '../cubit/home_cubit.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+  // static const route = '/HomePage';
+
+  static Route<void> route() {
+    return MaterialPageRoute(
+      builder: (context) => BlocProvider(
+        create: (context) => HomeCubit(),
+        child: const HomeView(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
