@@ -30,7 +30,7 @@ class CheckSessionStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     var currentStatus = BlocProvider.of<LoginBloc>(context).state.status;
     TextUtils.printLog('CheckSessionStatus', '$currentStatus');
-    if (currentStatus == LoginStatus.logout) {
+    if (currentStatus == LoginStatus.initial) {
       return const LoginView();
     } else {
       return const HomePage();

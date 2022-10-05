@@ -28,7 +28,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (_repository.getUser().token.isNotEmpty) {
       emit(state.copyWith(status: LoginStatus.loggedin));
     } else {
-      emit(state.copyWith(status: LoginStatus.logout));
+      emit(state.copyWith(status: LoginStatus.initial));
     }
   }
 
@@ -93,7 +93,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       user = user.copyWith(token: '');
       _repository.saveUser(user);
       TextUtils.printLog('loggout', 'user loggout');
-      emit(state.copyWith(status: LoginStatus.logout));
+      emit(state.copyWith(status: LoginStatus.initial));
       event.logout();
     } catch (e) {
       emit(state.copyWith(status: LoginStatus.failure));
