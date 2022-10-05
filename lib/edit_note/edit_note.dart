@@ -1,4 +1,4 @@
-export 'bloc/edit_note_bloc.dart';
+export 'cubit/edit_note_cubit.dart';
 export 'view/view.dart';
 
 // ├── BlocProvider<EditNoteBloc>

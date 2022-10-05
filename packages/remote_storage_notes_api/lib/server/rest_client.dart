@@ -14,7 +14,11 @@ abstract class RestClient {
   Future<Response<dynamic>> getNotes();
 
   @POST('/notes/{id}/{remoteId}.json')
-  Future<Response<dynamic>> saveNote(@Path("id") String id, @Path("remoteId") String remoteId, Note noteModel,);
+  Future<Response<dynamic>> saveNote(
+    @Path("id") String id,
+    @Path("remoteId") String remoteId,
+    Note noteModel,
+  );
 
   @DELETE('/notes.json')
   Future<Response<dynamic>> clearArchived();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes_app/edit_note/cubit/edit_note_cubit.dart';
 import 'package:notes_app/edit_note/edit_note.dart';
 import 'package:notes_app/home/home.dart';
 import 'package:notes_app/login/view/login_page.dart';
@@ -71,11 +72,9 @@ class AppView extends StatelessWidget {
         path: EditNotePage.route,
         name: EditNotePage.route,
         builder: (context, state) => BlocProvider(
-          create: (context) => EditNoteBloc(
-            remoteRepository: context.read<RemoteRepository>(),
-            notesRepository: context.read<NotesRepository>(),
-            initialNote:
-                state.extra == null ? Note.initialNote() : state.extra as Note,
+          create: (context) => EditNoteCubit(
+            context.read<NotesRepository>(),
+            state.extra == null ? Note.initialNote() : state.extra as Note,
           ),
           child: const EditNotePage(),
         ),

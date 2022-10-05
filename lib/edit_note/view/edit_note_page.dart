@@ -7,12 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:notes_app/l10n/l10n.dart';
-import 'package:notes_repository/note_repository.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as syspaths;
 
 import '../../utils/text_utils.dart';
-import '../bloc/edit_note_bloc.dart';
+import '../cubit/edit_note_cubit.dart';
 
 class EditNotePage extends StatelessWidget {
   const EditNotePage({super.key});
@@ -21,7 +20,7 @@ class EditNotePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<EditNoteBloc, EditNoteState>(
+    return BlocListener<EditNoteCubit, EditNoteState>(
       listenWhen: (previous, current) =>
           previous.status != current.status &&
           current.status == EditNoteStatus.success,
@@ -37,9 +36,9 @@ class EditNoteView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final status = context.select((EditNoteBloc bloc) => bloc.state.status);
+    final status = context.select((EditNoteCubit cubit) => cubit.state.status);
     final isNewNote = context.select(
-      (EditNoteBloc bloc) => bloc.state.isNewNote,
+      (EditNoteCubit cubit) => cubit.state.isNewNote,
     );
     final theme = Theme.of(context);
     final floatingActionButtonTheme = theme.floatingActionButtonTheme;
@@ -68,8 +67,7 @@ class EditNoteView extends StatelessWidget {
             ? null
             : () {
                 if (_formKey.currentState!.validate()) {
-                  context.read<EditNoteBloc>().add(const EditNoteSubmitted());
-                  TextUtils.printLog('build', ' add note pressed');
+                  context.read<EditNoteCubit>().onSaveNotePressed();
                 }
               },
         child: status.isLoadingOrSuccess
@@ -118,12 +116,12 @@ class _TitleField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final state = context.watch<EditNoteBloc>().state;
+    final state = BlocProvider.of<EditNoteCubit>(context, listen: false).state;
     final hintText = state.initialNote?.title ?? '';
 
     return TextFormField(
       key: const Key('editNoteView_title_textFormField'),
-      initialValue: state.title,
+      initialValue: state.initialNote!.title,
       decoration: InputDecoration(
         enabled: !state.status.isLoadingOrSuccess,
         labelText: l10n.editNoteTitleLabel,
@@ -134,13 +132,8 @@ class _TitleField extends StatelessWidget {
         LengthLimitingTextInputFormatter(50),
         FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s]')),
       ],
-      onChanged: (value) {
-        context.read<EditNoteBloc>().add(EditNoteTitleChanged(value));
-      },
-      validator: (value) {
-        if (value == null || value.isEmpty) return 'Required';
-        return null;
-      },
+      onChanged: (value) => context.read<EditNoteCubit>().onTitleChanged(value),
+      validator: (value) => context.read<EditNoteCubit>().validateTitle(value),
     );
   }
 }
@@ -152,12 +145,12 @@ class _DescriptionField extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    final state = context.watch<EditNoteBloc>().state;
+    final state = context.watch<EditNoteCubit>().state;
     final hintText = state.initialNote?.body ?? '';
 
     return TextFormField(
         key: const Key('editNoteView_description_textFormField'),
-        initialValue: state.body,
+        initialValue: state.initialNote!.body,
         decoration: InputDecoration(
           enabled: !state.status.isLoadingOrSuccess,
           labelText: l10n.editNoteDescriptionLabel,
@@ -168,13 +161,10 @@ class _DescriptionField extends StatelessWidget {
         inputFormatters: [
           LengthLimitingTextInputFormatter(300),
         ],
-        onChanged: (value) {
-          context.read<EditNoteBloc>().add(EditNoteDescriptionChanged(value));
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) return 'Required';
-          return null;
-        });
+        onChanged: (value) =>
+            context.read<EditNoteCubit>().onDescriptionChanged(value),
+        validator: (value) =>
+            context.read<EditNoteCubit>().validateDescription(value));
   }
 }
 
@@ -185,8 +175,7 @@ class ImageInput extends StatelessWidget {
   ImageInput({super.key});
 
   void _saveImage(BuildContext context, String savedImagePath) {
-    TextUtils.printLog(tag, '_selectImage');
-    context.read<EditNoteBloc>().add(EditNoteImageChanged(savedImagePath));
+    context.read<EditNoteCubit>().onImageChanged(savedImagePath);
   }
 
   Future<void> _takePicture(Function(String savedImagePath) saveImage) async {
@@ -208,7 +197,7 @@ class ImageInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<EditNoteBloc>().state;
+    final state = context.watch<EditNoteCubit>().state;
     savedImagePath = savedImagePath.isEmpty
         ? state.initialNote?.imageUrl ?? ''
         : savedImagePath;

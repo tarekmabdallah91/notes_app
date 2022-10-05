@@ -1,7 +1,6 @@
 import '../notes_api.dart';
 
 abstract class RemoteApi {
-  
   Future<dynamic> getNotes();
 
   Future<dynamic> saveNote(Note noteModel);

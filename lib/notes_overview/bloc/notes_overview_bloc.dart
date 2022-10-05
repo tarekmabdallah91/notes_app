@@ -111,7 +111,6 @@ class NotesOverviewBloc extends Bloc<NotesOverviewEvent, NotesOverviewState> {
     NotesOverviewToggleAllRequested event,
     Emitter<NotesOverviewState> emit,
   ) async {
-    
     for (var note in state.notes) {
       if (note.isArchived) {
         _removeArchivedNote(note);

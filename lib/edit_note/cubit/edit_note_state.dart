@@ -1,4 +1,4 @@
-part of 'edit_note_bloc.dart';
+part of 'edit_note_cubit.dart';
 
 enum EditNoteStatus { initial, loading, success, failure }
 
@@ -15,7 +15,7 @@ class EditNoteState extends Equatable {
     this.initialNote,
     this.title = '',
     this.body = '',
-    this.imageUrl ='',
+    this.imageUrl = '',
   });
 
   final EditNoteStatus status;
@@ -45,3 +45,5 @@ class EditNoteState extends Equatable {
   @override
   List<Object?> get props => [status, initialNote, title, body, imageUrl];
 }
+
+

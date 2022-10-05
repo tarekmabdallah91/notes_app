@@ -3,29 +3,27 @@ import 'package:notes_api/notes_api.dart';
 import '../server/dio_factory.dart';
 import '../server/rest_client.dart';
 
-
-class RemoteStorageNotesApi extends RemoteApi{
-
+class RemoteStorageNotesApi extends RemoteApi {
   final RestClient client;
 
   RemoteStorageNotesApi(this.client);
 
   @override
   Future<Response<dynamic>> getNotes() {
-   return client.getNotes();
+    return client.getNotes();
   }
 
   @override
-  Future<Response<dynamic>>saveNote(Note noteModel) {
-   return client.saveNote(noteModel.id, noteModel.remoteId, noteModel);
+  Future<Response<dynamic>> saveNote(Note noteModel) {
+    return client.saveNote(noteModel.id, noteModel.remoteId, noteModel);
   }
 
-@override
+  @override
   Future<Response<dynamic>> clearArchived() {
     return client.clearArchived();
   }
-  
-@override
+
+  @override
   Future<Response<dynamic>> deleteNote(String id, String remoteId) {
     return client.deleteNote(id, remoteId);
   }

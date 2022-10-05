@@ -5,7 +5,7 @@ class NotesSharedPreferences {
 
   NotesSharedPreferences(this._sharedPreferences);
 
-    /// The key used for storing the Notes locally.
+  /// The key used for storing the Notes locally.
   /// This is only exposed for testing and shouldn't be used by consumers of
   /// this library.
   @visibleForTesting
@@ -15,8 +15,7 @@ class NotesSharedPreferences {
   Future<void> setValue(String key, String value) =>
       _sharedPreferences.setString(key, value);
 
-
-  void init(BehaviorSubject<List<Note>> _noteStreamController){
+  void init(BehaviorSubject<List<Note>> _noteStreamController) {
     final notesJson = getValue(kNotesCollectionKey);
     if (notesJson != null) {
       final notes = List<Map<dynamic, dynamic>>.from(
@@ -30,7 +29,8 @@ class NotesSharedPreferences {
     }
   }
 
-  Future<void> saveNote(BehaviorSubject<List<Note>> _noteStreamController, Note note) {
+  Future<void> saveNote(
+      BehaviorSubject<List<Note>> _noteStreamController, Note note) {
     final notes = [..._noteStreamController.value];
     final noteIndex = notes.indexWhere((element) => element.id == note.id);
     if (noteIndex >= 0) {
@@ -42,7 +42,8 @@ class NotesSharedPreferences {
     return setValue(kNotesCollectionKey, json.encode(notes));
   }
 
-  Future<void> deleteNote(BehaviorSubject<List<Note>> _noteStreamController, String id) async {
+  Future<void> deleteNote(
+      BehaviorSubject<List<Note>> _noteStreamController, String id) async {
     final notes = [..._noteStreamController.value];
     final noteIndex = notes.indexWhere((element) => element.id == id);
     if (noteIndex == -1) {
@@ -54,7 +55,8 @@ class NotesSharedPreferences {
     }
   }
 
-  Future<int> clearArchived(BehaviorSubject<List<Note>> _noteStreamController) async {
+  Future<int> clearArchived(
+      BehaviorSubject<List<Note>> _noteStreamController) async {
     final notes = [..._noteStreamController.value];
     final archivedNotesAmount =
         notes.where((element) => element.isArchived).length;
@@ -64,7 +66,8 @@ class NotesSharedPreferences {
     return archivedNotesAmount;
   }
 
-  Future<int> archiveAll(BehaviorSubject<List<Note>> _noteStreamController, { required bool isArchived}) async {
+  Future<int> archiveAll(BehaviorSubject<List<Note>> _noteStreamController,
+      {required bool isArchived}) async {
     final notes = [..._noteStreamController.value];
     final changedNotesAmount =
         notes.where((element) => element.isArchived != isArchived).length;

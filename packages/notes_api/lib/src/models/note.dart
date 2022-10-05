@@ -37,7 +37,8 @@ class Note extends Equatable {
           id == null || id.isNotEmpty,
           'id can not be null and should be empty',
         ),
-        id = id ?? const Uuid().v4(), remoteId = remoteId ?? '';
+        id = id ?? const Uuid().v4(),
+        remoteId = remoteId ?? '';
 
   factory Note.fromJson(Map<String, dynamic> json) => _$NoteModelFromJson(json);
 
@@ -45,7 +46,7 @@ class Note extends Equatable {
 
   @override
   String toString() {
-    return 'Note{id: $id\nremoteId: $remoteId\nname: $title\nage: $body\ntime: $noteTime\nimageUrl $imageUrl\nisArchived $isArchived}';
+    return 'Note{id: $id\nremoteId: $remoteId\nname: $title\nbody: $body\ntime: $noteTime\nimageUrl $imageUrl\nisArchived $isArchived}';
   }
 
   @override
