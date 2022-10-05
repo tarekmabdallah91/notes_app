@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/edit_note/edit_note.dart';
 import 'package:notes_app/home/home.dart';
-import 'package:notes_app/login/bloc/login_bloc.dart';
 import 'package:notes_app/login/view/login_page.dart';
 import 'package:notes_repository/note_repository.dart';
 import 'package:go_router/go_router.dart';

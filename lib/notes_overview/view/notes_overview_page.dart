@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notes_app/l10n/l10n.dart';
-import 'package:notes_app/login/bloc/login_bloc.dart';
+import 'package:notes_app/login/cubit/login_cubit.dart';
 import 'package:notes_repository/note_repository.dart';
 
 import '../../edit_note/view/edit_note_page.dart';
@@ -27,7 +27,7 @@ class NotesOverviewPage extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) =>
-              LoginBloc(sessionRespository: context.read<SessionRepository>()),
+              LoginCubit(sessionRespository: context.read<SessionRepository>()),
         ),
       ],
       child: const NotesOverviewView(),

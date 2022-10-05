@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notes_api/notes_api.dart';
 import 'package:notes_app/l10n/l10n.dart';
-import 'package:notes_app/login/bloc/login_bloc.dart';
 import 'package:notes_app/login/login.dart';
 
+import '../../login/cubit/login_cubit.dart';
 import '../bloc/notes_overview_bloc.dart';
 
 @visibleForTesting
@@ -40,9 +40,9 @@ class NotesOverviewOptionsButton extends StatelessWidget {
                 .add(const NotesOverviewClearArchivedRequested());
             break;
           case NotesOverviewOption.logout:
-            context.read<LoginBloc>().add(LoginOutSubmitted(
+            context.read<LoginCubit>().loggout(
                   () => GoRouter.of(context).push(LoginPage.route),
-                ));
+                );
 
             break;
         }
