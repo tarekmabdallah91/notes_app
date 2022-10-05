@@ -41,7 +41,7 @@ class NotesOverviewOptionsButton extends StatelessWidget {
             break;
           case NotesOverviewOption.logout:
             context.read<LoginBloc>().add(LoginOutSubmitted(
-                  () => GoRouter.of(context).go(LoginPage.route),
+                  () => GoRouter.of(context).push(LoginPage.route),
                 ));
 
             break;

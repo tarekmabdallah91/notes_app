@@ -46,6 +46,8 @@ class EditNoteView extends StatelessWidget {
     final fabBackgroundColor = floatingActionButtonTheme.backgroundColor ??
         theme.colorScheme.secondary;
 
+    final _formKey = GlobalKey<FormState>();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -65,9 +67,10 @@ class EditNoteView extends StatelessWidget {
         onPressed: status.isLoadingOrSuccess
             ? null
             : () {
-                context.read<EditNoteBloc>().add(const EditNoteSubmitted());
-                // GoRouter.of(context).pop();
-                TextUtils.printLog('build', ' add note pressed');
+                if (_formKey.currentState!.validate()) {
+                  context.read<EditNoteBloc>().add(const EditNoteSubmitted());
+                  TextUtils.printLog('build', ' add note pressed');
+                }
               },
         child: status.isLoadingOrSuccess
             ? const CupertinoActivityIndicator()
@@ -77,16 +80,33 @@ class EditNoteView extends StatelessWidget {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                const _TitleField(),
-                const _DescriptionField(),
-                const SizedBox(height: 10),
-                ImageInput(),
-              ],
-            ),
+            child: EditNoteForm(_formKey),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class EditNoteForm extends StatelessWidget {
+  const EditNoteForm(
+    this._formKey, {
+    Key? key,
+  }) : super(key: key);
+
+  final _formKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          const _TitleField(),
+          const _DescriptionField(),
+          const SizedBox(height: 10),
+          ImageInput(),
+        ],
       ),
     );
   }
@@ -117,6 +137,10 @@ class _TitleField extends StatelessWidget {
       onChanged: (value) {
         context.read<EditNoteBloc>().add(EditNoteTitleChanged(value));
       },
+      validator: (value) {
+        if (value == null || value.isEmpty) return 'Required';
+        return null;
+      },
     );
   }
 }
@@ -132,22 +156,25 @@ class _DescriptionField extends StatelessWidget {
     final hintText = state.initialNote?.body ?? '';
 
     return TextFormField(
-      key: const Key('editNoteView_description_textFormField'),
-      initialValue: state.body,
-      decoration: InputDecoration(
-        enabled: !state.status.isLoadingOrSuccess,
-        labelText: l10n.editNoteDescriptionLabel,
-        hintText: hintText,
-      ),
-      maxLength: 300,
-      maxLines: 7,
-      inputFormatters: [
-        LengthLimitingTextInputFormatter(300),
-      ],
-      onChanged: (value) {
-        context.read<EditNoteBloc>().add(EditNoteDescriptionChanged(value));
-      },
-    );
+        key: const Key('editNoteView_description_textFormField'),
+        initialValue: state.body,
+        decoration: InputDecoration(
+          enabled: !state.status.isLoadingOrSuccess,
+          labelText: l10n.editNoteDescriptionLabel,
+          hintText: hintText,
+        ),
+        maxLength: 300,
+        maxLines: 7,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(300),
+        ],
+        onChanged: (value) {
+          context.read<EditNoteBloc>().add(EditNoteDescriptionChanged(value));
+        },
+        validator: (value) {
+          if (value == null || value.isEmpty) return 'Required';
+          return null;
+        });
   }
 }
 

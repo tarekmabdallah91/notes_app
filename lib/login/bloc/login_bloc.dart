@@ -25,6 +25,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) async {
     emit(state.copyWith(status: LoginStatus.loading));
+    TextUtils.printLog("token", _repository.getUser().token);
     if (_repository.getUser().token.isNotEmpty) {
       emit(state.copyWith(status: LoginStatus.loggedin));
     } else {
@@ -60,7 +61,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       _repository.saveUser(user);
       event.login();
-      emit(state.copyWith(status: LoginStatus.success));
+      emit(state.copyWith(status: LoginStatus.loggedin));
     } catch (e) {
       emit(state.copyWith(status: LoginStatus.failure));
     }

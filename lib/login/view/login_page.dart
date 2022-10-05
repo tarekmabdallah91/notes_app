@@ -28,7 +28,7 @@ class CheckSessionStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var currentStatus = BlocProvider.of<LoginBloc>(context).state.status;
+    var currentStatus = context.watch<LoginBloc>().state.status;
     TextUtils.printLog('CheckSessionStatus', '$currentStatus');
     if (currentStatus == LoginStatus.initial) {
       return const LoginView();
@@ -44,28 +44,50 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      backgroundColor: Color.fromARGB(255, 117, 183, 124),
+      body: LoginForm(),
+    );
+  }
+}
+
+class LoginForm extends StatelessWidget {
+  LoginForm({
+    Key? key,
+  }) : super(key: key);
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Card(
             elevation: 10,
             margin: EdgeInsets.all(8),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _UserNameField(),
                 _PasswordField(),
                 ElevatedButton(
-                    onPressed: () => context.read<LoginBloc>().add(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing Data')),
+                        );
+                        context.read<LoginBloc>().add(
                           LoginSubmitted(() {
                             TextUtils.printLog("login btn ", 'pressed');
                             GoRouter.of(context).go(
                               HomePage.route,
                             );
                           }),
-                        ),
+                        );
+                      }
+                    },
                     child: Text('Login'))
               ],
             ),
@@ -83,23 +105,37 @@ class _UserNameField extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<LoginBloc>().state;
     const hintText = '1234';
-
-    return TextFormField(
-      key: const Key('loggin_userId_textFormField'),
-      initialValue: '',
-      decoration: const InputDecoration(
-        enabled: true,
-        labelText: "User id",
-        hintText: hintText,
+    final idRegex =
+        RegExp(r'[0-9\s]'); // r'([0-9]{4}$)' r'[0-9\s]' TODO need to be fixed
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: TextFormField(
+        key: const Key('loggin_userId_textFormField'),
+        initialValue: '',
+        decoration: const InputDecoration(
+          enabled: true,
+          labelText: "User id",
+          hintText: hintText,
+        ),
+        maxLength: 4,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(4),
+          FilteringTextInputFormatter.allow(idRegex),
+        ],
+        onChanged: (value) {
+          context.read<LoginBloc>().add(LoginUserNameChanged(value));
+        },
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'User Id Required';
+          } else {
+            if (!idRegex.hasMatch(value)) {
+              return 'Id must be 4 digits';
+            }
+          }
+          return null;
+        },
       ),
-      maxLength: 4,
-      inputFormatters: [
-        LengthLimitingTextInputFormatter(4),
-        FilteringTextInputFormatter.allow(RegExp(r'[0-9\s]')),
-      ],
-      onChanged: (value) {
-        context.read<LoginBloc>().add(LoginUserNameChanged(value));
-      },
     );
   }
 }
@@ -112,22 +148,32 @@ class _PasswordField extends StatelessWidget {
     final state = context.watch<LoginBloc>().state;
     const hintText = '';
 
-    return TextFormField(
-      key: const Key('login_password_textFormField'),
-      initialValue: '',
-      decoration: const InputDecoration(
-        enabled: true,
-        labelText: 'password',
-        hintText: hintText,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: TextFormField(
+        key: const Key('login_password_textFormField'),
+        initialValue: '',
+        decoration: const InputDecoration(
+          enabled: true,
+          labelText: 'password',
+          hintText: hintText,
+        ),
+        maxLength: 20,
+        maxLines: 1,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(20),
+        ],
+        onChanged: (value) {
+          context.read<LoginBloc>().add(LoginPasswordChanged(value));
+        },
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Required';
+          }
+          return null;
+        },
+        obscureText: true,
       ),
-      maxLength: 20,
-      maxLines: 1,
-      inputFormatters: [
-        LengthLimitingTextInputFormatter(20),
-      ],
-      onChanged: (value) {
-        context.read<LoginBloc>().add(LoginPasswordChanged(value));
-      },
     );
   }
 }
