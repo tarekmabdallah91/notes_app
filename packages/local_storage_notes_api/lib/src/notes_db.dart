@@ -60,20 +60,23 @@ class NotesDb {
   }
 
   Future<int> clearArchived() async {
-    final notes = await getAllNotes();
-    final archivedNotesAmount =
-        notes.where((element) => element.isArchived).length;
-    notes.removeWhere((element) => element.isArchived);
-    return archivedNotesAmount;
+    final db = await database();
+    return db.transaction((txn) => txn.delete(
+          tableName,
+          // Use a `where` clause to delete a specific NoteModel.
+          where: 'isArchived = ?',
+          // Pass the NoteModel's id as a whereArg to prevent SQL injection.
+          whereArgs: [1],
+        ));
   }
 
   Future<int> archiveAll({required bool isArchived}) async {
     final notes = await getAllNotes();
-    final changedNotesAmount =
+    final changedNotesCount =
         notes.where((element) => element.isArchived != isArchived).length;
     final newNotes = [
       for (final note in notes) note.copyWith(isArchived: isArchived)
     ];
-    return changedNotesAmount;
+    return changedNotesCount;
   }
 }

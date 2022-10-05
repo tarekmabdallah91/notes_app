@@ -9,7 +9,11 @@ import 'package:notes_repository/note_repository.dart';
 import 'app/app.dart';
 import 'app/app_bloc_observer.dart';
 
-void bootstrap({required NotesApi notesApi, required SessionApi sessionApi}) {
+void bootstrap({
+  required NotesApi notesApi,
+  required SessionApi sessionApi,
+  required RemoteApi remoteApi,
+}) {
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
@@ -18,11 +22,13 @@ void bootstrap({required NotesApi notesApi, required SessionApi sessionApi}) {
 
   final notesRepository = NotesRepository(notesApi: notesApi);
   final sessionRepository = SessionRepository(sessionApi);
+  final remoteRespository = RemoteRepository(remoteApi);
 
   runZonedGuarded(
     () => runApp(NotesApp(
       notesRepository: notesRepository,
       sessionRepository: sessionRepository,
+       remoteRespository: remoteRespository,
     )),
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );

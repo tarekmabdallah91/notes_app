@@ -21,7 +21,8 @@ class NotesOverviewPage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => NotesOverviewBloc(
-              notesRepository: context.read<NotesRepository>())
+              notesRepository: context.read<NotesRepository>(),
+              remoteRepository: context.read<RemoteRepository>())
             ..add(const NotesOverviewSubscriptionRequested()),
         ),
         BlocProvider(

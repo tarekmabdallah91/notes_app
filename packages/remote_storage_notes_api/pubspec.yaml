@@ -1,0 +1,24 @@
+name: remote_storage_notes_api
+description: The interface and models for an API providing access to notes.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  retrofit: ^3.0.1+1
+  json_annotation: ^4.7.0
+  pretty_dio_logger: ^1.2.0-beta-1
+  notes_api:
+    path: ../notes_api
+ 
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  json_serializable: '^6.4.0' 
+  retrofit_generator: '>=4.0.0 <5.0.0'
+  build_runner: ^2.2.1

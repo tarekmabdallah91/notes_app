@@ -67,24 +67,31 @@ class LocalStorageNotesApi extends NotesApi {
   }
 
   void _deleteNoteStreamController(String id) {
-    _updateStreamController((notes) {final noteIndex = notes.indexWhere((element) => element.id == id);
-    if (noteIndex == -1) {
-      throw NoteNotFoundException();
-    } else {
-      notes.removeAt(noteIndex);
-    }});
+    _updateStreamController((notes) {
+      final noteIndex = notes.indexWhere((element) => element.id == id);
+      if (noteIndex == -1) {
+        throw NoteNotFoundException();
+      } else {
+        notes.removeAt(noteIndex);
+      }
+    });
   }
 
   @override
   Future<int> clearArchived() async {
     _clearArchivedStreamController();
-    return _notesDb.clearArchived();
+    int count = await _notesDb.clearArchived();
+    print('deleted count = $count');
+    var items = await _notesDb.getAllNotes();
+    print('current db count = $items');
+    return count;
     // return await _plugin.clearArchived(_noteStreamController);
   }
 
   void _clearArchivedStreamController() {
-    _updateStreamController((notes){
-    notes.removeWhere((element) => element.isArchived);});
+    _updateStreamController((notes) {
+      notes.removeWhere((element) => element.isArchived);
+    });
   }
 
   @override

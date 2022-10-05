@@ -18,6 +18,7 @@ part 'note.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Note extends Equatable {
   final String id;
+  String remoteId;
   final String title;
   final String body;
   final String noteTime;
@@ -26,6 +27,7 @@ class Note extends Equatable {
 
   Note({
     String? id,
+    String? remoteId,
     required this.title,
     required this.body,
     required this.noteTime,
@@ -35,7 +37,7 @@ class Note extends Equatable {
           id == null || id.isNotEmpty,
           'id can not be null and should be empty',
         ),
-        id = id ?? const Uuid().v4();
+        id = id ?? const Uuid().v4(), remoteId = remoteId ?? '';
 
   factory Note.fromJson(Map<String, dynamic> json) => _$NoteModelFromJson(json);
 
@@ -43,7 +45,7 @@ class Note extends Equatable {
 
   @override
   String toString() {
-    return 'Note{id: $id\nname: $title\nage: $body\ntime: $noteTime\nimageUrl $imageUrl\nisArchived $isArchived}';
+    return 'Note{id: $id\nremoteId: $remoteId\nname: $title\nage: $body\ntime: $noteTime\nimageUrl $imageUrl\nisArchived $isArchived}';
   }
 
   @override
@@ -52,6 +54,7 @@ class Note extends Equatable {
   /// Returns a copy of this NoteModel with the given values updated.
   Note copyWith({
     String? id,
+    String? remoteId,
     String? title,
     String? body,
     String? noteTime,
@@ -60,6 +63,7 @@ class Note extends Equatable {
   }) {
     return Note(
       id: id ?? this.id,
+      remoteId: remoteId ?? this.remoteId,
       title: title ?? this.title,
       body: body ?? this.body,
       noteTime: noteTime ?? this.noteTime,
@@ -68,6 +72,6 @@ class Note extends Equatable {
     );
   }
 
-  factory  Note.initialNote ()=>
+  factory Note.initialNote() =>
       Note(title: '', body: '', noteTime: '', imageUrl: '', isArchived: false);
 }

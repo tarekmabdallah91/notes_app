@@ -14,10 +14,12 @@ class NotesApp extends StatelessWidget {
     super.key,
     required this.notesRepository,
     required this.sessionRepository,
+    required this.remoteRespository,
   });
 
   final NotesRepository notesRepository;
   final SessionRepository sessionRepository;
+  final RemoteRepository remoteRespository;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,8 @@ class NotesApp extends StatelessWidget {
             create: (context) => notesRepository),
         RepositoryProvider<SessionRepository>(
             create: (context) => sessionRepository),
+        RepositoryProvider<RemoteRepository>(
+            create: (context) => remoteRespository),
       ],
       child: AppView(),
     );
@@ -69,8 +73,10 @@ class AppView extends StatelessWidget {
         name: EditNotePage.route,
         builder: (context, state) => BlocProvider(
           create: (context) => EditNoteBloc(
+            remoteRepository: context.read<RemoteRepository>(),
             notesRepository: context.read<NotesRepository>(),
-            initialNote: state.extra == null?  Note.initialNote() : state.extra as Note,
+            initialNote:
+                state.extra == null ? Note.initialNote() : state.extra as Note,
           ),
           child: const EditNotePage(),
         ),
