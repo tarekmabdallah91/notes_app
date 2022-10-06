@@ -1,4 +1,4 @@
-part of 'stats_bloc.dart';
+part of 'stats_cubit.dart';
 
 enum StatsStatus { initial, loading, success, failure }
 

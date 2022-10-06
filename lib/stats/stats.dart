@@ -1,4 +1,4 @@
-export 'bloc/stats_bloc.dart';
+export 'cubit/stats_cubit.dart';
 export 'view/view.dart';
 
 

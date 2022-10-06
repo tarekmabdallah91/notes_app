@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/l10n/l10n.dart';
 import 'package:notes_repository/note_repository.dart';
 
-import '../bloc/stats_bloc.dart';
+import '../cubit/stats_cubit.dart';
+
+
 
 class StatsPage extends StatelessWidget {
   const StatsPage({super.key});
@@ -11,9 +13,9 @@ class StatsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => StatsBloc(
+      create: (context) => StatsCubit(
         notesRepository: context.read<NotesRepository>(),
-      )..add(const StatsSubscriptionRequested()),
+      ),
       child: const StatsView(),
     );
   }
@@ -25,7 +27,7 @@ class StatsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final state = context.watch<StatsBloc>().state;
+    final state = context.watch<StatsCubit>().state;
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
