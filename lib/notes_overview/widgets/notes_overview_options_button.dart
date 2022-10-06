@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:notes_api/notes_api.dart';
 import 'package:notes_app/l10n/l10n.dart';
 import 'package:notes_app/login/login.dart';
 
-import '../../login/cubit/login_cubit.dart';
-import '../bloc/notes_overview_bloc.dart';
+import '../cubit/notes_overview_cubit.dart';
+
 
 @visibleForTesting
 enum NotesOverviewOption { toggleAll, clearCompleted, logout }
@@ -18,7 +17,7 @@ class NotesOverviewOptionsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    final notes = context.select((NotesOverviewBloc bloc) => bloc.state.notes);
+    final notes = context.select((NotesOverviewCubit cubit) => cubit.state.notes);
     final hasNotes = notes.isNotEmpty;
     final archivedTodosAmount = notes.where((note) => note.isArchived).length;
 
@@ -31,19 +30,16 @@ class NotesOverviewOptionsButton extends StatelessWidget {
         switch (options) {
           case NotesOverviewOption.toggleAll:
             context
-                .read<NotesOverviewBloc>()
-                .add(const NotesOverviewToggleAllRequested());
+                .read<NotesOverviewCubit>().onToggleAllRequested();
             break;
           case NotesOverviewOption.clearCompleted:
             context
-                .read<NotesOverviewBloc>()
-                .add(const NotesOverviewClearArchivedRequested());
+                .read<NotesOverviewCubit>().onClearArchivedRequested();
             break;
           case NotesOverviewOption.logout:
             context.read<LoginCubit>().loggout(
                   () => GoRouter.of(context).push(LoginPage.route),
                 );
-
             break;
         }
       },
@@ -63,7 +59,7 @@ class NotesOverviewOptionsButton extends StatelessWidget {
             enabled: hasNotes && archivedTodosAmount > 0,
             child: Text(l10n.notesOverviewOptionsClearArchived),
           ),
-          PopupMenuItem(
+          const PopupMenuItem(
             value: NotesOverviewOption.logout,
             child: Text('logout'),
           ),

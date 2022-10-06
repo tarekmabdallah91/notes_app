@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notes_app/l10n/l10n.dart';
 import 'package:notes_app/login/cubit/login_cubit.dart';
+import 'package:notes_app/notes_overview/cubit/notes_overview_cubit.dart';
 import 'package:notes_repository/note_repository.dart';
 
 import '../../edit_note/view/edit_note_page.dart';
-import '../bloc/notes_overview_bloc.dart';
 import '../widgets/note_list_tile.dart';
 import '../widgets/notes_overview_filter_button.dart';
 import '../widgets/notes_overview_options_button.dart';
@@ -20,11 +20,9 @@ class NotesOverviewPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => NotesOverviewBloc(
-              notesRepository: context.read<NotesRepository>(),
-              remoteRepository: context.read<RemoteRepository>())
-            ..add(const NotesOverviewSubscriptionRequested()),
-        ),
+            create: (context) => NotesOverviewCubit(
+                notesRepository: context.read<NotesRepository>(),
+                remoteRepository: context.read<RemoteRepository>())),
         BlocProvider(
           create: (context) =>
               LoginCubit(sessionRespository: context.read<SessionRepository>()),
@@ -52,7 +50,7 @@ class NotesOverviewView extends StatelessWidget {
       ),
       body: MultiBlocListener(
         listeners: [
-          BlocListener<NotesOverviewBloc, NotesOverviewState>(
+          BlocListener<NotesOverviewCubit, NotesOverviewState>(
             listenWhen: (previous, current) =>
                 previous.status != current.status,
             listener: (context, state) {
@@ -67,7 +65,7 @@ class NotesOverviewView extends StatelessWidget {
               }
             },
           ),
-          BlocListener<NotesOverviewBloc, NotesOverviewState>(
+          BlocListener<NotesOverviewCubit, NotesOverviewState>(
             listenWhen: (previous, current) =>
                 previous.lastDeletedNote != current.lastDeletedNote &&
                 current.lastDeletedNote != null,
@@ -87,8 +85,8 @@ class NotesOverviewView extends StatelessWidget {
                       onPressed: () {
                         messenger.hideCurrentSnackBar();
                         context
-                            .read<NotesOverviewBloc>()
-                            .add(const NotesOverviewUndoDeletionRequested());
+                            .read<NotesOverviewCubit>()
+                            .onUndoDeletionRequested();
                       },
                     ),
                   ),
@@ -96,7 +94,7 @@ class NotesOverviewView extends StatelessWidget {
             },
           ),
         ],
-        child: BlocBuilder<NotesOverviewBloc, NotesOverviewState>(
+        child: BlocBuilder<NotesOverviewCubit, NotesOverviewState>(
           builder: (context, state) {
             if (state.notes.isEmpty) {
               if (state.status == NotesOverviewStatus.loading) {
@@ -120,17 +118,15 @@ class NotesOverviewView extends StatelessWidget {
                     NoteListTile(
                       note: note,
                       onToggleArchived: (isArchived) {
-                        context.read<NotesOverviewBloc>().add(
-                              NotesOverviewNoteArchivedToggled(
-                                note: note,
-                                isArchived: isArchived,
-                              ),
+                        context
+                            .read<NotesOverviewCubit>()
+                            .onNoteArchivedToggled(
+                              note: note,
+                              isArchived: isArchived,
                             );
                       },
                       onDismissed: (_) {
-                        context
-                            .read<NotesOverviewBloc>()
-                            .add(NotesOverviewNoteDeleted(note));
+                        context.read<NotesOverviewCubit>().onNoteDeleted(note);
                       },
                       onTap: () {
                         GoRouter.of(context)

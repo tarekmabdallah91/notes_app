@@ -1,4 +1,4 @@
-part of 'notes_overview_bloc.dart';
+part of 'notes_overview_cubit.dart';
 
 enum NotesOverviewStatus { initial, loading, success, failure }
 
@@ -18,17 +18,16 @@ class NotesOverviewState extends Equatable {
   Iterable<Note> get filteredNotes => filter.applyAll(notes);
 
   NotesOverviewState copyWith({
-    NotesOverviewStatus Function()? status,
-    List<Note> Function()? notes,
-    NotesViewFilter Function()? filter,
-    Note? Function()? lastDeletedNote,
+    NotesOverviewStatus ? status,
+    List<Note> ? notes,
+    NotesViewFilter ? filter,
+    Note? lastDeletedNote,
   }) {
     return NotesOverviewState(
-      status: status != null ? status() : this.status,
-      notes: notes != null ? notes() : this.notes,
-      filter: filter != null ? filter() : this.filter,
-      lastDeletedNote:
-          lastDeletedNote != null ? lastDeletedNote() : this.lastDeletedNote,
+      status: status ?? this.status,
+      notes: notes ?? this.notes,
+      filter: filter ?? this.filter,
+      lastDeletedNote: lastDeletedNote ?? this.lastDeletedNote,
     );
   }
 
