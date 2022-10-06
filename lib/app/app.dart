@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/edit_note/cubit/edit_note_cubit.dart';
 import 'package:notes_app/edit_note/edit_note.dart';
 import 'package:notes_app/home/home.dart';
+import 'package:notes_app/login/cubit/login_cubit.dart';
 import 'package:notes_app/login/view/login_page.dart';
+import 'package:notes_app/utils/text_utils.dart';
 import 'package:notes_repository/note_repository.dart';
 import 'package:go_router/go_router.dart';
 import '../l10n/l10n.dart';
@@ -42,13 +44,17 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: FlutterNotesTheme.light,
-      darkTheme: FlutterNotesTheme.dark,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: _router,
+    return BlocProvider(
+      create: (context) =>
+          LoginCubit(sessionRespository: context.read<SessionRepository>()),
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: FlutterNotesTheme.light,
+        darkTheme: FlutterNotesTheme.dark,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: _router,
+      ),
     );
   }
 
@@ -80,14 +86,37 @@ class AppView extends StatelessWidget {
         ),
       )
     ],
-    //     redirect: (context, state) async {
-    //   if (await LoginService.of(context).isLoggedIn) {
+    // redirect: (context, state) async { TODO need to be fixed and used 
+    //   final stateCubit = BlocProvider.of<LoginCubit>(context).state;
+    //   TextUtils.printLog("status", stateCubit);
+    //   TextUtils.printLog("state", state.location);
+    //   if (stateCubit.status == LoginStatus.loggedin &&
+    //       state.location != LoginPage.route) {
     //     return state.location;
     //   }
-    //   return '/login';
+    //   return LoginPage.route;
     // },
     errorBuilder: (context, state) => ErrorScreen(state.error),
   );
+
+  String? safePage(GoRouterState state) {
+    final newPage = state.location;
+
+    // if the new page is the same as the current page, do nothing
+    if (newPage == LoginPage.route) {
+      return LoginPage.route;
+    }
+
+    if (newPage == HomePage.route) {
+      return HomePage.route;
+    }
+
+    if (newPage == EditNotePage.route) {
+      return EditNotePage.route;
+    }
+
+    return null;
+  }
 }
 
 class ErrorScreen extends StatelessWidget {
@@ -96,6 +125,7 @@ class ErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextUtils.printLog('ErrorScreen', error.toString());
     return Scaffold(
       body: Center(
         child: Text("Error occured! $error"),
