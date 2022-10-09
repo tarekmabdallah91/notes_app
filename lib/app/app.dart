@@ -86,41 +86,22 @@ class AppView extends StatelessWidget {
         ),
       )
     ],
-    // redirect: (context, state) async { TODO need to be fixed and used 
-    //   final stateCubit = BlocProvider.of<LoginCubit>(context).state;
-    //   TextUtils.printLog("status", stateCubit);
-    //   TextUtils.printLog("state", state.location);
-    //   if (stateCubit.status == LoginStatus.loggedin &&
-    //       state.location != LoginPage.route) {
-    //     return state.location;
-    //   }
-    //   return LoginPage.route;
-    // },
+    redirect: (context, state) async {
+      final stateCubit = BlocProvider.of<LoginCubit>(context).state;
+      TextUtils.printLog("status", stateCubit);
+      TextUtils.printLog("state", state.location);
+      if (state.subloc != LoginPage.route &&
+          stateCubit.status != LoginStatus.loggedin) {
+        return LoginPage.route;
+      }
+      return null;
+    },
     errorBuilder: (context, state) => ErrorScreen(state.error),
   );
-
-  String? safePage(GoRouterState state) {
-    final newPage = state.location;
-
-    // if the new page is the same as the current page, do nothing
-    if (newPage == LoginPage.route) {
-      return LoginPage.route;
-    }
-
-    if (newPage == HomePage.route) {
-      return HomePage.route;
-    }
-
-    if (newPage == EditNotePage.route) {
-      return EditNotePage.route;
-    }
-
-    return null;
-  }
 }
 
 class ErrorScreen extends StatelessWidget {
-  ErrorScreen(this.error);
+  ErrorScreen(this.error, {super.key});
   Exception? error;
 
   @override
